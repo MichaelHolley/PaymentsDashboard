@@ -1,0 +1,50 @@
+<div class="my-1">
+  <button class="btn btn-primary mb-2" (click)="paymentAddButtonAction()">New Payment</button>
+  <div *ngIf="showForm" class="mb-2">
+    <h3>
+      New Payment
+    </h3>
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="titleInput">Title</label>
+        <input type="text" id="titleInput" class="form-control" formControlName="title" />
+      </div>
+      <div class="form-group">
+        <label for="amountInput">Amount</label>
+        <input type="number" id="amountInput" step="0.01" min="0" class="form-control" formControlName="amount" />
+      </div>
+      <div class="form-group">
+        <label for="dateInput">Date</label>
+        <input type="date" id="dateInput" class="form-control" formControlName="date" />
+      </div>
+      <div class="form-group">
+        <label for="tagsSelection">Tags</label>
+        <select class="form-control" id="tagsSelection" formControlName="tags" multiple>
+          <option *ngFor="let tag of availableTags" [value]="tag">{{ tag.title }}</option>
+        </select>
+      </div>
+      <div class="text-right">
+        <button class="btn btn-outline-primary mr-2" type="button" (click)="resetForm()">Reset</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngFor="let date of displayedPayments" class="my-1">
+  <div class="text-left h4" style="border-bottom: 1px solid lightgrey;">{{date.date | date}}</div>
+  <div *ngFor="let payment of date.payments; let i = index" class="row p-1 m-2 hoverable bg-light ml-2">
+    <div class="col-12 col-sm-4 text-left d-flex flex-column">
+      <div>{{ payment.title }}</div>
+    </div>
+    <div class="col-4 col-sm-4">
+      <ul class="pl-0">
+        <li *ngFor="let tag of payment.tags" class="badge btn-primary mr-1" style="display: inline-block;" [style.background-color]="tag.hexColorCode">{{tag.title}}</li>
+      </ul>
+    </div>
+    <div class="col-4 col-sm-3 font-weight-bold text-right h4">{{ payment.amount | number : '1.2-2' }} €</div>
+    <div class="col-1 text-right">
+      <button class="btn btn-outline-primary" (click)="editPayment(payment)">Edit</button>
+    </div>
+  </div>
+</div>

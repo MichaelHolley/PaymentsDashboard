@@ -1,0 +1,29 @@
+<button class="btn btn-primary mb-2" (click)="tagsButtonAction()">Tag-Administration</button>
+<div *ngIf="showTagsComponent">
+  <h3>
+    Tags
+  </h3>
+  <form>
+    <input type="text" class="form-control" placeholder="Title" />
+    <input type="color" class="form-control" placeholder="Tag-Color" />
+  </form>
+  <table class="table table-condensed table-hover">
+    <thead>
+      <tr>
+        <th>
+          Title
+        </th>
+        <th>
+          Color
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tag of existingTags">
+        <td>{{ tag.title }}</td>
+        <td [style.background-color]="tag.hexColorCode"></td>
+      </tr>
+    </tbody>
+  </table>
+  <hr />
+</div>
