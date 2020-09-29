@@ -46,14 +46,14 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutPayment(Guid id, Payment payment)
+		public async Task<IActionResult> PutPayment(Guid id, PaymentPostModel payment)
 		{
 			if (id != payment.PaymentId)
 			{
 				return BadRequest();
 			}
 
-			_context.Entry(payment).State = EntityState.Modified;
+			_context.Entry(new Payment(payment)).State = EntityState.Modified;
 
 			try
 			{

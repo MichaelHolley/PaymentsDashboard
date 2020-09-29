@@ -23,9 +23,8 @@ namespace PaymentsDashboard.Data
 		[Range(0, Double.PositiveInfinity)]
 		public decimal Amount { get; set; }
 
-		[DataType(DataType.Date)]
-		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-		public DateTime Date { get; set; }
+		public string Date { get; set; }
+
 		public ICollection<PaymentTagRelation> Tags { get; set; }
 	}
 }

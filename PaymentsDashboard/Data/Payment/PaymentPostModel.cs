@@ -10,7 +10,7 @@ namespace PaymentsDashboard.Data
 		public Guid PaymentId { get; set; }
 		public string Title { get; set; }
 		public decimal Amount { get; set; }
-		public DateTime Date { get; set; }
+		public string Date { get; set; }
 		public virtual ICollection<Guid> TagIds { get; set; }
 	}
 }

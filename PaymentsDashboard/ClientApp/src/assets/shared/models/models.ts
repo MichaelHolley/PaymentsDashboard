@@ -6,7 +6,7 @@ export class Payment {
   paymentId: string;
   title: string;
   amount: number;
-  date: Date;
+  date: string;
   tags: Tag[];
 }
 
@@ -14,7 +14,7 @@ export class PaymentPostModel {
   paymentId: string;
   title: string;
   amount: number;
-  date: Date;
+  date: string;
   tagIds: string[];
 }
 

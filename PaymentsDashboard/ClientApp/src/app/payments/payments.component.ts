@@ -13,7 +13,7 @@ export class PaymentsComponent implements OnInit {
   availableTags: Tag[];
   usedTags: Tag[] = [];
 
-  displayedPayments: { date: Date, payments: Payment[] }[] = [];
+  displayedPayments: { date: string, payments: Payment[] }[];
 
   showForm = false;
   paymentForm: FormGroup;
@@ -22,7 +22,7 @@ export class PaymentsComponent implements OnInit {
     id: undefined,
     title: '',
     amount: 0,
-    date: this.currentDateToString(),
+    date: this.dateToString(new Date),
     tags: []
   }  
 
@@ -36,11 +36,17 @@ export class PaymentsComponent implements OnInit {
       paymentId: [undefined],
       title: [""],
       amount: [0, [Validators.required, Validators.min(0.01)]],
-      date: [this.currentDateToString(), Validators.required],
+      date: ["", Validators.required],
       tags: [[]]
     });
 
     this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
+
+    this.getPayments();
+  }
+
+  getPayments() {
+    this.displayedPayments = [];
 
     this.paymentService.getAllPayments().subscribe(result => {
       result.forEach(r => {
@@ -48,11 +54,11 @@ export class PaymentsComponent implements OnInit {
           paymentId: r.paymentId,
           title: r.title,
           amount: r.amount,
-          date: new Date(r.date),
+          date: r.date,
           tags: r.tags
         };
 
-        if (this.displayedPayments.length == 0 || this.displayedPayments[this.displayedPayments.length - 1].date.getTime() != p.date.getTime()) {
+        if (this.displayedPayments.length == 0 || new Date(this.displayedPayments[this.displayedPayments.length - 1].date).getTime() != new Date(p.date).getTime()) {
           this.displayedPayments.push({ date: p.date, payments: [] });
         }
         this.displayedPayments[this.displayedPayments.length - 1].payments.push(p);
@@ -66,6 +72,8 @@ export class PaymentsComponent implements OnInit {
           });
         }
       });
+
+      console.log(this.displayedPayments);
     });
   }
 
@@ -80,10 +88,6 @@ export class PaymentsComponent implements OnInit {
   }
 
   onSubmit() {
-    this.paymentForm.patchValue({
-      date: this.paymentForm.value.date + "T00:00:00"
-    });
-
     // TODO CHECK IF VALID
     let postPayment: PaymentPostModel = new PaymentPostModel();
     postPayment.paymentId = this.paymentForm.value.id;
@@ -96,11 +100,14 @@ export class PaymentsComponent implements OnInit {
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
       //TODO add result to payments-list of parent
       this.resetForm();
+      this.getPayments();
     });
   }
 
   editPayment(payment: Payment) {
     this.showForm = true;
+
+    console.log(payment)
 
     this.paymentForm.patchValue({
       paymentId: payment.paymentId,
@@ -109,6 +116,8 @@ export class PaymentsComponent implements OnInit {
       date: payment.date,
       tags: payment.tags
     });
+
+    console.log(this.paymentForm.value)
   }
 
   paymentAddButtonAction() {
@@ -117,8 +126,7 @@ export class PaymentsComponent implements OnInit {
     this.tagsService.getAllTags().subscribe(result => { this.availableTags = result });
   }
 
-  currentDateToString() {
-    var date = new Date();
+  dateToString(date: Date) {
     return (date.getFullYear() + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())));
   }
 }
