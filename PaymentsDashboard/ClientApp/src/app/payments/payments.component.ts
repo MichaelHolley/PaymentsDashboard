@@ -72,8 +72,6 @@ export class PaymentsComponent implements OnInit {
           });
         }
       });
-
-      console.log(this.displayedPayments);
     });
   }
 
@@ -96,8 +94,6 @@ export class PaymentsComponent implements OnInit {
     postPayment.date = this.paymentForm.value.date;
     postPayment.tagIds = [];
     this.paymentForm.value.tags.forEach(tag => { postPayment.tagIds.push(tag.tagId) });
-
-    console.log(postPayment)
 
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
       //TODO add result to payments-list of parent
