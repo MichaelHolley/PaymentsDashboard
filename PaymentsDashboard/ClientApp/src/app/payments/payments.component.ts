@@ -19,7 +19,7 @@ export class PaymentsComponent implements OnInit {
   paymentForm: FormGroup;
 
   resetFromJSON = {
-    id: undefined,
+    paymentId: undefined,
     title: '',
     amount: 0,
     date: this.dateToString(new Date),
@@ -90,12 +90,14 @@ export class PaymentsComponent implements OnInit {
   onSubmit() {
     // TODO CHECK IF VALID
     let postPayment: PaymentPostModel = new PaymentPostModel();
-    postPayment.paymentId = this.paymentForm.value.id;
+    postPayment.paymentId = this.paymentForm.value.paymentId;
     postPayment.title = this.paymentForm.value.title;
     postPayment.amount = this.paymentForm.value.amount;
     postPayment.date = this.paymentForm.value.date;
     postPayment.tagIds = [];
     this.paymentForm.value.tags.forEach(tag => { postPayment.tagIds.push(tag.tagId) });
+
+    console.log(postPayment)
 
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
       //TODO add result to payments-list of parent
@@ -107,8 +109,6 @@ export class PaymentsComponent implements OnInit {
   editPayment(payment: Payment) {
     this.showForm = true;
 
-    console.log(payment)
-
     this.paymentForm.patchValue({
       paymentId: payment.paymentId,
       title: payment.title,
@@ -116,8 +116,6 @@ export class PaymentsComponent implements OnInit {
       date: payment.date,
       tags: payment.tags
     });
-
-    console.log(this.paymentForm.value)
   }
 
   paymentAddButtonAction() {
