@@ -105,6 +105,8 @@ export class PaymentsComponent implements OnInit {
   editPayment(payment: Payment) {
     this.showForm = true;
 
+    window.scroll(0, 0);
+
     this.paymentForm.patchValue({
       paymentId: payment.paymentId,
       title: payment.title,
