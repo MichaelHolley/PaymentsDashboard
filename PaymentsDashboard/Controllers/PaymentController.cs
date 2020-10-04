@@ -45,70 +45,66 @@ namespace PaymentsDashboard.Controllers
 			return payment;
 		}
 
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutPayment(Guid id, PaymentPostModel payment)
-		{
-			if (id != payment.PaymentId)
-			{
-				return BadRequest();
-			}
-
-			_context.Entry(new Payment(payment)).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!PaymentExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return NoContent();
-		}
-
 		[HttpPost]
-		public async Task<ActionResult<Payment>> PostPayment(PaymentPostModel payment)
+		public async Task<ActionResult<Payment>> CreateOrUpdatePayment(PaymentPostModel payment)
 		{
-			Payment saved = new Payment(payment);
-			_context.Payments.Add(saved);
-
-			List<PaymentTagRelation> relations = new List<PaymentTagRelation>();
-			payment.TagIds.ToList<Guid>().ForEach(tagId =>
+			if (payment.PaymentId == Guid.Empty)
 			{
-				var tag = _context.Tags.Find(tagId);
+				Payment saved = new Payment(payment);
+				_context.Payments.Add(saved);
 
-				if (tag == null)
+				List<PaymentTagRelation> relations = new List<PaymentTagRelation>();
+				payment.TagIds.ToList<Guid>().ForEach(tagId =>
 				{
-					return;
+					var tag = _context.Tags.Find(tagId);
+
+					if (tag == null)
+					{
+						return;
+					}
+
+					relations.Add(
+						new PaymentTagRelation()
+						{
+							Payment = saved,
+							Tag = tag
+						}
+					);
+				});
+
+				relations.ForEach(rel =>
+				{
+					_context.PaymentTagRelations.Add(rel);
+				});
+
+				saved.Tags = relations;
+
+				await _context.SaveChangesAsync();
+
+				return CreatedAtAction("GetPayment", new { id = payment.PaymentId }, payment);
+			}
+			else
+			{
+				_context.Entry(new Payment(payment)).State = EntityState.Modified;
+
+				try
+				{
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!PaymentExists(payment.PaymentId))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
 				}
 
-				relations.Add(
-					new PaymentTagRelation()
-					{
-						Payment = saved,
-						Tag = tag
-					}
-				);
-			});
-
-			relations.ForEach(rel =>
-			{
-				_context.PaymentTagRelations.Add(rel);
-			});
-
-			saved.Tags = relations;
-
-			await _context.SaveChangesAsync();
-
-			return CreatedAtAction("GetPayment", new { id = payment.PaymentId }, payment);
+				return NoContent();
+			}			
 		}
 
 		[HttpDelete("{id}")]
