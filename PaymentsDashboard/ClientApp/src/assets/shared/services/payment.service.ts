@@ -17,7 +17,6 @@ export class PaymentService {
   }
 
   createOrUpdatePayment(payment: PaymentPostModel): Observable<any> {
-    console.log(payment)
     return this.httpClient.post<PaymentPostModel>(this.URL, payment);
   }
 
