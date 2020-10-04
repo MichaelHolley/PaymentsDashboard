@@ -1,0 +1,25 @@
+<!-- MOBILE - STILL WIP -->
+<nav class="navbar container d-block d-sm-none p-0">
+  <ul class="navbar-nav mr-auto" *ngIf="expandedOnMobile">
+    <li class="nav-item pl-2">
+      <a class="nav-link font-weight-bold" [routerLink]="['']">Payments</a>
+    </li>
+    <li class="nav-item pl-2">
+      <a class="nav-link font-weight-bold" [routerLink]="['Tags']">Tags</a>
+    </li>
+  </ul>
+</nav>
+
+<!-- DESKTOP -->
+<nav class="navbar navbar-expand-sm d-none d-sm-block py-0">
+  <div class="container">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link font-weight-bold" [routerLink]="['']">Payments</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link font-weight-bold" [routerLink]="['Tags']">Tags</a>
+      </li>
+    </ul>
+  </div>
+</nav>

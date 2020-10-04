@@ -1,12 +1,17 @@
-<button class="btn btn-primary mb-2" (click)="tagsButtonAction()">Tag-Administration</button>
-<div *ngIf="showTagsComponent">
-  <h3>
-    Tags
-  </h3>
-  <form>
-    <input type="text" class="form-control" placeholder="Title" />
-    <input type="color" class="form-control" placeholder="Tag-Color" />
-  </form>
+<div class="my-1">
+  <button class="btn btn-primary mb-2" (click)="tagsButtonAction()">Tag-Administration</button>
+  <div *ngIf="showTagsComponent">
+    <h3>
+      Tags
+    </h3>
+    <form>
+      <input type="text" class="form-control" placeholder="Title" />
+      <input type="color" class="form-control" placeholder="Tag-Color" />
+    </form>
+  </div>
+</div>
+
+<div class="my-1">
   <table class="table table-condensed table-hover">
     <thead>
       <tr>
@@ -25,5 +30,4 @@
       </tr>
     </tbody>
   </table>
-  <hr />
 </div>

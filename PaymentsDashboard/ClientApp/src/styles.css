@@ -1,6 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --orange-crayola: #FF6B35;
+  --peach-crayola: #F7C59F;
+  --beige: #EFEFD0;
+  --usafa-blue: #004E89;
+  --saphire-blue: #1A659E;
+}
 
-/* Provide sufficient contrast against white background */
+html {
+  scroll-behavior: smooth;
+}
+
 a {
   color: #0366d6;
 }
@@ -20,6 +29,26 @@ code {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-html {
-  scroll-behavior: smooth;
+.navbar {
+  background-color: var(--orange-crayola);
+}
+
+.navbar-nav > .nav-item:hover {
+  background-color: var(--peach-crayola);
+}
+
+.nav-collapse-btn,
+.navbar-nav > .nav-item > .nav-link {
+  font-size: 1.25rem;
+  color: var(--beige);
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+
+.nav-collapse-btn > a:link,
+.nav-collapse-btn > a:visited {
+  color: var(--beige);
 }
