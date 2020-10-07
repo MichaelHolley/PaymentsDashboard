@@ -40,8 +40,8 @@ code {
   .btn-outline-primary:hover,
   .btn-outline-primary:active,
   .btn-outline-primary:focus {
-    color: var(--orange-crayola) !important;
-    background-color: var(--beige) !important;
+    color: var(--beige) !important;
+    background-color: var(--orange-crayola) !important;
     border-color: var(--orange-crayola) !important;
   }
 
