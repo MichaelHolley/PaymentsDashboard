@@ -19,10 +19,31 @@ code {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  color: var(--beige);
+  background-color: var(--orange-crayola);
+  border-color: var(--peach-crayola);
 }
+
+  .btn-primary:hover,
+  .btn-primary:active,
+  .btn-primary:focus {
+    color: var(--orange-crayola) !important;
+    background-color: var(--peach-crayola) !important;
+    border-color: var(--peach-crayola) !important;
+  }
+
+.btn-outline-primary {
+  color: var(--orange-crayola);
+  border-color: var(--orange-crayola);
+}
+
+  .btn-outline-primary:hover,
+  .btn-outline-primary:active,
+  .btn-outline-primary:focus {
+    color: var(--orange-crayola) !important;
+    background-color: var(--beige) !important;
+    border-color: var(--orange-crayola) !important;
+  }
 
 .hoverable:hover {
   background-color: rgb(235, 235, 235) !important;
