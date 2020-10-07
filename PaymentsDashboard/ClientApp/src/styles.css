@@ -1,9 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap');
+
 :root {
   --orange-crayola: #FF6B35;
   --peach-crayola: #F7C59F;
   --beige: #EFEFD0;
   --usafa-blue: #004E89;
   --saphire-blue: #1A659E;
+}
+
+* {
+  font-family: 'Lato', sans-serif;
 }
 
 html {
@@ -84,8 +90,11 @@ code {
   cursor: pointer;
 }
 
-
 .nav-collapse-btn > a:link,
 .nav-collapse-btn > a:visited {
   color: var(--orange-crayola);
+}
+
+.text-beige {
+  color: var(--beige);
 }
