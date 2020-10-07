@@ -32,6 +32,11 @@ code {
     border-color: var(--peach-crayola) !important;
   }
 
+
+  .btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem var(--peach-crayola) !important;
+  }
+
 .btn-outline-primary {
   color: var(--orange-crayola);
   border-color: var(--orange-crayola);
@@ -43,6 +48,11 @@ code {
     color: var(--beige) !important;
     background-color: var(--orange-crayola) !important;
     border-color: var(--orange-crayola) !important;
+  }
+
+
+  .btn-outline-primary:focus {
+    box-shadow: 0 0 0 0.2rem var(--peach-crayola) !important;
   }
 
 .hoverable:hover {
@@ -64,6 +74,12 @@ code {
   color: var(--beige);
 }
 
+  .nav-collapse-btn:hover,
+  .navbar-nav > .nav-item > .nav-link:hover {
+    font-size: 1.25rem;
+    color: var(--orange-crayola);
+  }
+
 .pointer:hover {
   cursor: pointer;
 }
@@ -71,5 +87,5 @@ code {
 
 .nav-collapse-btn > a:link,
 .nav-collapse-btn > a:visited {
-  color: var(--beige);
+  color: var(--orange-crayola);
 }
