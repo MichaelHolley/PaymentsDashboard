@@ -6,6 +6,10 @@
   --saphire-blue: #1A659E;
 }
 
+* {
+  font-family: 'Lato', sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -19,10 +23,40 @@ code {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  color: var(--beige);
+  background-color: var(--orange-crayola);
+  border-color: var(--peach-crayola);
 }
+
+  .btn-primary:hover,
+  .btn-primary:active,
+  .btn-primary:focus {
+    color: var(--orange-crayola) !important;
+    background-color: var(--peach-crayola) !important;
+    border-color: var(--peach-crayola) !important;
+  }
+
+
+  .btn-primary:focus {
+    box-shadow: none !important;
+  }
+
+.btn-outline-primary {
+  color: var(--orange-crayola);
+  border-color: var(--orange-crayola);
+}
+
+  .btn-outline-primary:hover,
+  .btn-outline-primary:active,
+  .btn-outline-primary:focus {
+    color: var(--beige) !important;
+    background-color: var(--orange-crayola) !important;
+    border-color: var(--orange-crayola) !important;
+  }
+
+  .btn-outline-primary:focus {
+    box-shadow: none !important;
+  }
 
 .hoverable:hover {
   background-color: rgb(235, 235, 235) !important;
@@ -43,12 +77,21 @@ code {
   color: var(--beige);
 }
 
+  .nav-collapse-btn:hover,
+  .navbar-nav > .nav-item > .nav-link:hover {
+    font-size: 1.25rem;
+    color: var(--orange-crayola);
+  }
+
 .pointer:hover {
   cursor: pointer;
 }
 
-
 .nav-collapse-btn > a:link,
 .nav-collapse-btn > a:visited {
+  color: var(--orange-crayola);
+}
+
+.text-beige {
   color: var(--beige);
 }
