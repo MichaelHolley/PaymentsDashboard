@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
+using PaymentsDashboard.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,19 @@ namespace PaymentsDashboard.Controllers
 	[ApiController]
 	public class PaymentController : ControllerBase
 	{
+		private readonly IPaymentService paymentService;
 		private readonly DataContext _context;
 
-		public PaymentController(DataContext context)
+		public PaymentController(IPaymentService paymentService, DataContext context)
 		{
-			_context = context;
+			this.paymentService = paymentService;
+			this._context = context;
 		}
 
 		[HttpGet]
 		public ActionResult<IEnumerable<PaymentViewModel>> GetPayments()
 		{
-			List<Payment> payments = _context.Payments.AsNoTracking().Include(r => r.Tags).ThenInclude(r => r.Tag).ToList();
+			List<Payment> payments = paymentService.GetAllPayments().ToList();
 
 			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
 			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
@@ -33,9 +36,9 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Payment>> GetPayment(Guid id)
+		public ActionResult<Payment> GetPayment(Guid id)
 		{
-			var payment = await _context.Payments.FindAsync(id);
+			var payment = paymentService.GetPaymentById(id, false);
 
 			if (payment == null)
 			{

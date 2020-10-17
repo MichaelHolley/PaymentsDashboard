@@ -14,8 +14,11 @@ namespace PaymentsDashboard.Data
 			this.Amount = payment.Amount;
 			this.Date = payment.Date;
 
-			this.Tags = new List<Tag>();
-			payment.Tags.ToList().ForEach(tagRelation => this.Tags.Add(tagRelation.Tag));
+			this.Tags = new List<Tag>();			
+			if(payment.Tags != null)
+			{
+				payment.Tags.ToList().ForEach(tagRelation => this.Tags.Add(tagRelation.Tag));
+			}
 		}
 
 		public Guid PaymentId { get; set; }
