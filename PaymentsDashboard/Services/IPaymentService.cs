@@ -9,5 +9,7 @@ namespace PaymentsDashboard.Data.Services
 	{
 		public IQueryable<Payment> GetAllPayments();
 		public Payment GetPaymentById(Guid Id, bool tracked = false);
+		public Payment DeletePaymentById(Guid id);
+		public IEnumerable<PaymentTagRelation> DeletePaymentTagRelationsByPaymentId(Guid id);
 	}
 }

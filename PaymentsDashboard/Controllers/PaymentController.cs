@@ -107,22 +107,20 @@ namespace PaymentsDashboard.Controllers
 				}
 
 				return NoContent();
-			}			
+			}
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ActionResult<Payment>> DeletePayment(Guid id)
+		public ActionResult<Payment> DeletePayment(Guid id)
 		{
-			var payment = await _context.Payments.FindAsync(id);
-			if (payment == null)
+			var result = paymentService.DeletePaymentById(id);
+
+			if (result == null)
 			{
 				return NotFound();
 			}
 
-			_context.Payments.Remove(payment);
-			await _context.SaveChangesAsync();
-
-			return payment;
+			return Ok(result);
 		}
 
 		private bool PaymentExists(Guid id)
