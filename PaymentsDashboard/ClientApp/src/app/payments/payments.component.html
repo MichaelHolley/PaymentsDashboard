@@ -43,8 +43,9 @@
       </ul>
     </div>
     <div class="col-4 col-sm-3 font-weight-bold text-right h4">{{ payment.amount | number : '1.2-2' }} €</div>
-    <div class="col-1 text-right">
-      <button class="btn btn-outline-primary" (click)="editPayment(payment)">Edit</button>
+    <div class="col-1 text-center">
+      <button class="btn btn-sm btn-outline-primary" (click)="editPayment(payment)">Edit</button>
+      <button class="btn btn-sm btn-outline-primary" (click)="deletePayment(payment)">Delete</button>
     </div>
   </div>
 </div>

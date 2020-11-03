@@ -24,7 +24,7 @@ export class PaymentsComponent implements OnInit {
     amount: 0,
     date: this.dateToString(new Date),
     tags: []
-  }  
+  }
 
   constructor(private tagsService: TagService,
     private paymentService: PaymentService,
@@ -124,5 +124,11 @@ export class PaymentsComponent implements OnInit {
 
   dateToString(date: Date) {
     return (date.getFullYear() + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())));
+  }
+
+  deletePayment(payment: Payment) {
+    this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
+      this.getPayments();
+    });
   }
 }
