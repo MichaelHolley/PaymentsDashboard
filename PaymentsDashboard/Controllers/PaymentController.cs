@@ -35,17 +35,17 @@ namespace PaymentsDashboard.Controllers
 			return viewList;
 		}
 
-		[HttpGet("{id}")]
-		public ActionResult<Payment> GetPayment(Guid id)
+		[HttpGet("{numberOfMonths}")]
+		public ActionResult<IEnumerable<PaymentViewModel>> GetPaymentsByMonths(int numberOfMonths)
 		{
-			var payment = paymentService.GetPaymentById(id, false);
+			List<Payment> payments = paymentService.GetPaymentsByMonths(numberOfMonths).ToList();
 
-			if (payment == null)
-			{
-				return NotFound();
-			}
+			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
+			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
 
-			return payment;
+			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
+
+			return viewList;
 		}
 
 		[HttpPost]
