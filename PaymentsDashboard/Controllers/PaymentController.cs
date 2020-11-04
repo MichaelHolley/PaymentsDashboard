@@ -36,16 +36,16 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpGet("{numberOfMonths}")]
-		public ActionResult<Payment> GetPaymentsByMonths(int numberOfMonths)
+		public ActionResult<IEnumerable<PaymentViewModel>> GetPaymentsByMonths(int numberOfMonths)
 		{
-			var payments = paymentService.GetPaymentsByMonths(numberOfMonths);
+			List<Payment> payments = paymentService.GetPaymentsByMonths(numberOfMonths).ToList();
 
-			if (payments.Count() <= 0)
-			{
-				return NotFound();
-			}
+			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
+			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
 
-			return Ok(payments);
+			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
+
+			return viewList;
 		}
 
 		[HttpPost]

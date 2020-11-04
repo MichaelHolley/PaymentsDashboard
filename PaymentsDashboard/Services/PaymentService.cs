@@ -37,7 +37,7 @@ namespace PaymentsDashboard.Data.Services
 		{
 			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
 
-			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
+			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-")).Include(r => r.Tags).ThenInclude(r => r.Tag);
 		}
 
 		public Payment DeletePaymentById(Guid id)
