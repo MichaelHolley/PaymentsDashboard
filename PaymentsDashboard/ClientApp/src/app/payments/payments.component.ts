@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Tag, Payment, SortBy, PaymentPostModel } from '../../assets/shared/models/models';
+import { Tag, Payment, SortBy, PaymentPostModel, PaymentsPerDateModel } from '../../assets/shared/models/models';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TagService } from '../../assets/shared/services/tag.service';
@@ -14,7 +14,7 @@ export class PaymentsComponent implements OnInit {
   usedTags: Tag[] = [];
 
   numberOfDisplayedMonths: number;
-  displayedPayments: { date: string, payments: Payment[] }[];
+  displayedPayments: PaymentsPerDateModel[];
 
   showForm = false;
   paymentForm: FormGroup;
@@ -60,16 +60,17 @@ export class PaymentsComponent implements OnInit {
           tags: r.tags
         };
 
-        if (this.displayedPayments.length == 0 || new Date(this.displayedPayments[this.displayedPayments.length - 1].date).getTime() != new Date(p.date).getTime()) {
+        if (this.getIndexOfDate(p) == -1) {
           this.displayedPayments.push({ date: p.date, payments: [] });
-        }
-
-        if (this.displayedPayments[this.displayedPayments.length - 1].payments.indexOf(p) == -1) {
           this.displayedPayments[this.displayedPayments.length - 1].payments.push(p);
+        } else {
+          this.displayedPayments[this.getIndexOfDate(p)].payments.push(p);
         }
-
-        this.displayedPayments[this.displayedPayments.length - 1].payments.sort((a: Payment, b: Payment) => { return b.amount - a.amount; })
       });
+
+      this.displayedPayments.sort((a: PaymentsPerDateModel, b: PaymentsPerDateModel) => { return new Date(b.date).getTime() - new Date(a.date).getTime(); });
+
+      this.displayedPayments[this.displayedPayments.length - 1].payments.sort((a: Payment, b: Payment) => { return b.amount - a.amount; })
 
       result.forEach(payment => {
         if (payment.tags) {
@@ -79,6 +80,16 @@ export class PaymentsComponent implements OnInit {
         }
       });
     });
+  }
+
+  getIndexOfDate(payment: Payment) {
+    let index = -1;
+    for (let i = 0; i < this.displayedPayments.length; i++) {
+      if (new Date(this.displayedPayments[i].date).getTime() == new Date(payment.date).getTime()) {
+        return i;
+      }
+    }
+    return index;
   }
 
   getPreviousMonth() {

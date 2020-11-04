@@ -23,3 +23,8 @@ export class Tag {
   title: string;
   hexColorCode: string;
 }
+
+export class PaymentsPerDateModel {
+  date: string;
+  payments: Payment[];
+}

@@ -22,6 +22,11 @@ code {
   color: #e01a76;
 }
 
+.btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .btn-primary {
   color: var(--beige);
   background-color: var(--orange-crayola);
@@ -36,11 +41,6 @@ code {
     border-color: var(--peach-crayola) !important;
   }
 
-
-  .btn-primary:focus {
-    box-shadow: none !important;
-  }
-
 .btn-outline-primary {
   color: var(--orange-crayola);
   border-color: var(--orange-crayola);
@@ -52,10 +52,6 @@ code {
     color: var(--beige) !important;
     background-color: var(--orange-crayola) !important;
     border-color: var(--orange-crayola) !important;
-  }
-
-  .btn-outline-primary:focus {
-    box-shadow: none !important;
   }
 
 .hoverable:hover {
