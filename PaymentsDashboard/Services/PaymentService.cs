@@ -32,6 +32,14 @@ namespace PaymentsDashboard.Data.Services
 			return _context.Payments.Include(r => r.Tags).ThenInclude(r => r.Tag);
 		}
 
+
+		public IQueryable<Payment> GetPaymentsByMonths(int numberOfMonths)
+		{
+			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
+
+			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
+		}
+
 		public Payment DeletePaymentById(Guid id)
 		{
 			var payment = _context.Payments.Find(id);

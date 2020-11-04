@@ -16,6 +16,10 @@ export class PaymentService {
     return this.httpClient.get<Payment[]>(this.URL);
   }
 
+  getPaymentsByMonths(numberOfMonths: number): Observable<Payment[]> {
+    return this.httpClient.get<Payment[]>(this.URL + '/' + numberOfMonths);
+  }
+
   createOrUpdatePayment(payment: PaymentPostModel): Observable<any> {
     return this.httpClient.post<PaymentPostModel>(this.URL, payment);
   }

@@ -35,17 +35,17 @@ namespace PaymentsDashboard.Controllers
 			return viewList;
 		}
 
-		[HttpGet("{id}")]
-		public ActionResult<Payment> GetPayment(Guid id)
+		[HttpGet("{numberOfMonths}")]
+		public ActionResult<Payment> GetPaymentsByMonths(int numberOfMonths)
 		{
-			var payment = paymentService.GetPaymentById(id, false);
+			var payments = paymentService.GetPaymentsByMonths(numberOfMonths);
 
-			if (payment == null)
+			if (payments.Count() <= 0)
 			{
 				return NotFound();
 			}
 
-			return payment;
+			return Ok(payments);
 		}
 
 		[HttpPost]

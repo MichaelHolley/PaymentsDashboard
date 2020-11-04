@@ -13,6 +13,7 @@ export class PaymentsComponent implements OnInit {
   availableTags: Tag[];
   usedTags: Tag[] = [];
 
+  numberOfDisplayedMonths: number;
   displayedPayments: { date: string, payments: Payment[] }[];
 
   showForm = false;
@@ -42,13 +43,14 @@ export class PaymentsComponent implements OnInit {
 
     this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
 
-    this.getPayments();
-  }
-
-  getPayments() {
+    this.numberOfDisplayedMonths = 0;
     this.displayedPayments = [];
 
-    this.paymentService.getAllPayments().subscribe(result => {
+    this.getPayments(this.numberOfDisplayedMonths);
+  }
+
+  getPayments(numberOfMonths: number) {
+    this.paymentService.getPaymentsByMonths(numberOfMonths).subscribe(result => {
       result.forEach(r => {
         let p: Payment = {
           paymentId: r.paymentId,
@@ -61,7 +63,11 @@ export class PaymentsComponent implements OnInit {
         if (this.displayedPayments.length == 0 || new Date(this.displayedPayments[this.displayedPayments.length - 1].date).getTime() != new Date(p.date).getTime()) {
           this.displayedPayments.push({ date: p.date, payments: [] });
         }
-        this.displayedPayments[this.displayedPayments.length - 1].payments.push(p);
+
+        if (this.displayedPayments[this.displayedPayments.length - 1].payments.indexOf(p) == -1) {
+          this.displayedPayments[this.displayedPayments.length - 1].payments.push(p);
+        }
+
         this.displayedPayments[this.displayedPayments.length - 1].payments.sort((a: Payment, b: Payment) => { return b.amount - a.amount; })
       });
 
@@ -73,6 +79,11 @@ export class PaymentsComponent implements OnInit {
         }
       });
     });
+  }
+
+  getPreviousMonth() {
+    this.numberOfDisplayedMonths++;
+    this.getPayments(this.numberOfDisplayedMonths);
   }
 
   addToUsedTags(tag: Tag) {
@@ -98,7 +109,7 @@ export class PaymentsComponent implements OnInit {
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
       //TODO add result to payments-list of parent
       this.resetForm();
-      this.getPayments();
+      this.getPayments(this.numberOfDisplayedMonths);
     });
   }
 
@@ -128,7 +139,7 @@ export class PaymentsComponent implements OnInit {
 
   deletePayment(payment: Payment) {
     this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
-      this.getPayments();
+      this.getPayments(this.numberOfDisplayedMonths);
     });
   }
 }
