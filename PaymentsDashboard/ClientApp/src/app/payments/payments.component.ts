@@ -49,7 +49,11 @@ export class PaymentsComponent implements OnInit {
     this.getPayments(this.numberOfDisplayedMonths);
   }
 
-  getPayments(numberOfMonths: number) {
+  getPayments(numberOfMonths: number, clearExisting: boolean = false) {
+    if (clearExisting) {
+      this.displayedPayments = [];
+    }
+
     this.paymentService.getPaymentsByMonths(numberOfMonths).subscribe(result => {
       result.forEach(r => {
         let p: Payment = {
@@ -120,7 +124,7 @@ export class PaymentsComponent implements OnInit {
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
       //TODO add result to payments-list of parent
       this.resetForm();
-      this.getPayments(this.numberOfDisplayedMonths);
+      this.getPayments(this.numberOfDisplayedMonths, true);
     });
   }
 
@@ -150,7 +154,7 @@ export class PaymentsComponent implements OnInit {
 
   deletePayment(payment: Payment) {
     this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
-      this.getPayments(this.numberOfDisplayedMonths);
+      this.getPayments(this.numberOfDisplayedMonths, true);
     });
   }
 }
