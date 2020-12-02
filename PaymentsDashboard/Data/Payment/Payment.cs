@@ -6,16 +6,10 @@ namespace PaymentsDashboard.Data
 {
 	public class Payment
 	{
-		public Payment(PaymentPostModel payment)
+		public Payment()
 		{
-			this.PaymentId = payment.PaymentId;
-			this.Amount = payment.Amount;
-			this.Title = payment.Title;
-			this.Date = payment.Date;
-			this.Tags = new List<PaymentTagRelation>();
+			this.Tags = new List<Tag>();
 		}
-
-		public Payment() { }
 
 		public Guid PaymentId { get; set; }
 		public string Title { get; set; }
@@ -25,6 +19,6 @@ namespace PaymentsDashboard.Data
 
 		public string Date { get; set; }
 
-		public ICollection<PaymentTagRelation> Tags { get; set; }
+		public virtual ICollection<Tag> Tags { get; set; }
 	}
 }
