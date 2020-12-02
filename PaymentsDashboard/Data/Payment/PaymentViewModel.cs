@@ -17,7 +17,7 @@ namespace PaymentsDashboard.Data
 			this.Tags = new List<Tag>();			
 			if(payment.Tags != null)
 			{
-				payment.Tags.ToList().ForEach(tagRelation => this.Tags.Add(tagRelation.Tag));
+				payment.Tags.ToList().ForEach(tag => this.Tags.Add(tag));
 			}
 		}
 

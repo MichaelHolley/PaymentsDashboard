@@ -12,6 +12,7 @@ namespace PaymentsDashboard.Data
 		}
 
 		public Guid PaymentId { get; set; }
+
 		public string Title { get; set; }
 
 		[Range(0, Double.PositiveInfinity)]

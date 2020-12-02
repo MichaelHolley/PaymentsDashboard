@@ -49,65 +49,9 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Payment>> CreateOrUpdatePayment(PaymentPostModel payment)
+		public async Task<ActionResult<Payment>> CreateOrUpdatePayment(Payment payment)
 		{
-			if (payment.PaymentId == Guid.Empty)
-			{
-				Payment saved = new Payment(payment);
-				_context.Payments.Add(saved);
-
-				List<PaymentTagRelation> relations = new List<PaymentTagRelation>();
-				payment.TagIds.ToList<Guid>().ForEach(tagId =>
-				{
-					var tag = _context.Tags.Find(tagId);
-
-					if (tag == null)
-					{
-						return;
-					}
-
-					relations.Add(
-						new PaymentTagRelation()
-						{
-							Payment = saved,
-							Tag = tag
-						}
-					);
-				});
-
-				relations.ForEach(rel =>
-				{
-					_context.PaymentTagRelations.Add(rel);
-				});
-
-				saved.Tags = relations;
-
-				await _context.SaveChangesAsync();
-
-				return CreatedAtAction("GetPayment", new { id = payment.PaymentId }, payment);
-			}
-			else
-			{
-				_context.Entry(new Payment(payment)).State = EntityState.Modified;
-
-				try
-				{
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!PaymentExists(payment.PaymentId))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-
-				return NoContent();
-			}
+			return Ok(payment);
 		}
 
 		[HttpDelete("{id}")]

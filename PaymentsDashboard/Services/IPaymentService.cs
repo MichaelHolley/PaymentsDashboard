@@ -11,6 +11,5 @@ namespace PaymentsDashboard.Data.Services
 		public IQueryable<Payment> GetPaymentsByMonths(int numberOfMonths);
 		public Payment GetPaymentById(Guid Id, bool tracked = false);
 		public Payment DeletePaymentById(Guid id);
-		public IEnumerable<PaymentTagRelation> DeletePaymentTagRelationsByPaymentId(Guid id);
 	}
 }

@@ -9,10 +9,9 @@ namespace PaymentsDashboard.Data
 		public DbSet<Tag> Tags { get; set; }
 		public DbSet<Payment> Payments { get; set; }
 
-
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<Payment>().HasMany<Tag>(p => p.Tags).WithMany(t => t.Payments);
 		}
 	}
 }

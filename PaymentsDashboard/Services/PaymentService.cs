@@ -29,7 +29,7 @@ namespace PaymentsDashboard.Data.Services
 
 		public IQueryable<Payment> GetAllPayments()
 		{
-			return _context.Payments.Include(r => r.Tags).ThenInclude(r => r.Tag);
+			return _context.Payments.Include(r => r.Tags);
 		}
 
 
@@ -37,7 +37,7 @@ namespace PaymentsDashboard.Data.Services
 		{
 			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
 
-			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-")).Include(r => r.Tags).ThenInclude(r => r.Tag);
+			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-")).Include(r => r.Tags);
 		}
 
 		public Payment DeletePaymentById(Guid id)
@@ -49,27 +49,10 @@ namespace PaymentsDashboard.Data.Services
 				return null;
 			}
 
-			DeletePaymentTagRelationsByPaymentId(id);
-
 			_context.Payments.Remove(payment);
 			_context.SaveChanges();
 
 			return payment;
-		}
-
-		public IEnumerable<PaymentTagRelation> DeletePaymentTagRelationsByPaymentId(Guid id)
-		{
-			var relations = _context.PaymentTagRelations.Where(r => r.Payment.PaymentId.Equals(id));
-
-			if (relations.Count() <= 0)
-			{
-				return null;
-			}
-
-			_context.PaymentTagRelations.RemoveRange(relations);
-			_context.SaveChanges();
-
-			return relations;
 		}
 	}
 }
