@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Services;
+using System;
 
 namespace PaymentsDashboard
 {
@@ -31,7 +32,8 @@ namespace PaymentsDashboard
 			});
 
 			services.AddDbContextPool<DataContext>(
-				options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+				options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 21)))
+			);
 
 			services.AddTransient<IPaymentService, PaymentService>();
 		}
