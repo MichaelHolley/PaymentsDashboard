@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Data.Services
 {
@@ -53,6 +51,28 @@ namespace PaymentsDashboard.Data.Services
 			_context.SaveChanges();
 
 			return payment;
+		}
+
+		public Payment CreatePayment(Payment payment)
+		{
+			var result = _context.Add(payment);
+			_context.SaveChanges();
+
+			return result.Entity;
+		}
+
+		public Payment UpdatePayment(Payment payment)
+		{
+			Payment paymentById = GetPaymentById(payment.PaymentId, true);
+
+			paymentById.Amount = payment.Amount;
+			paymentById.Date = payment.Date;
+			paymentById.Title = payment.Title;
+			paymentById.Tags = payment.Tags;
+
+			_context.SaveChanges();
+
+			return paymentById;
 		}
 	}
 }

@@ -32,7 +32,7 @@ namespace PaymentsDashboard.Controllers
 
 			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
 
-			return viewList;
+			return Ok(viewList);
 		}
 
 		[HttpGet("{numberOfMonths}")]
@@ -45,13 +45,26 @@ namespace PaymentsDashboard.Controllers
 
 			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
 
-			return viewList;
+			return Ok(viewList);
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Payment>> CreateOrUpdatePayment(Payment payment)
+		public ActionResult<Payment> CreateOrUpdatePayment(Payment payment)
 		{
-			return Ok(payment);
+			if(payment.PaymentId.Equals(Guid.Empty))
+			{
+				return Ok(paymentService.CreatePayment(payment));
+			} else
+			{
+				Payment paymentById = paymentService.GetPaymentById(payment.PaymentId);
+				if (paymentById == null)
+				{
+					return BadRequest();
+				} else
+				{
+					return Ok(paymentService.UpdatePayment(payment));
+				}
+			}
 		}
 
 		[HttpDelete("{id}")]
@@ -67,9 +80,5 @@ namespace PaymentsDashboard.Controllers
 			return Ok(result);
 		}
 
-		private bool PaymentExists(Guid id)
-		{
-			return _context.Payments.Any(e => e.PaymentId == id);
-		}
 	}
 }
