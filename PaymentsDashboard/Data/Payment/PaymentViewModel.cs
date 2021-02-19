@@ -29,6 +29,6 @@ namespace PaymentsDashboard.Data
 		public string Title { get; set; }
 		public decimal Amount { get; set; }
 		public string Date { get; set; }
-		public virtual ICollection<Tag> Tags { get; set; }
+		public ICollection<Tag> Tags { get; set; }
 	}
 }

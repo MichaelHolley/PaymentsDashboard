@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PaymentsDashboard.Data.Services
@@ -15,7 +16,7 @@ namespace PaymentsDashboard.Data.Services
 
 		public Payment GetPaymentById(Guid Id, bool tracked = false)
 		{
-			var payment = _context.Payments.Where(p => p.PaymentId.Equals(Id));
+			var payment = _context.Payments.Include(p => p.Tags).Where(p => p.PaymentId.Equals(Id));
 
 			if (!tracked)
 			{
@@ -35,12 +36,12 @@ namespace PaymentsDashboard.Data.Services
 		{
 			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
 
-			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-")).Include(r => r.Tags);
+			return _context.Payments.Include(r => r.Tags).Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
 		}
 
 		public Payment DeletePaymentById(Guid id)
 		{
-			var payment = _context.Payments.Find(id);
+			var payment = GetPaymentById(id, true);
 
 			if (payment == null)
 			{
@@ -55,10 +56,12 @@ namespace PaymentsDashboard.Data.Services
 
 		public Payment CreatePayment(Payment payment)
 		{
-			var result = _context.Add(payment);
+			payment.Tags = GetTrackedTagsList(payment.Tags);
+
+			_context.Payments.Add(payment);
 			_context.SaveChanges();
 
-			return result.Entity;
+			return payment;
 		}
 
 		public Payment UpdatePayment(Payment payment)
@@ -68,11 +71,22 @@ namespace PaymentsDashboard.Data.Services
 			paymentById.Amount = payment.Amount;
 			paymentById.Date = payment.Date;
 			paymentById.Title = payment.Title;
-			paymentById.Tags = payment.Tags;
+			paymentById.Tags = GetTrackedTagsList(payment.Tags);
 
 			_context.SaveChanges();
 
 			return paymentById;
+		}
+
+		private ICollection<Tag> GetTrackedTagsList(IEnumerable<Tag> tags)
+		{
+			List<Tag> trackedTags = new List<Tag>();
+			foreach (var tag in tags)
+			{
+				trackedTags.Add(_context.Tags.First(t => t.TagId.Equals(tag.TagId)));
+			}
+
+			return trackedTags;
 		}
 	}
 }

@@ -115,13 +115,9 @@ export class PaymentsComponent implements OnInit {
     // TODO CHECK IF VALID
     let postPayment = this.paymentForm.value as Payment;
 
-    this.paymentForm.value.tags.forEach(tagId => { postPayment.tags.push(this.availableTags.find(tag => tag.id === tagId)) });
-
-    console.log(postPayment)
-
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
-      //TODO add result to payments-list of parent
       this.resetForm();
+      this.showForm = false;
       this.getPayments(this.numberOfDisplayedMonths, true);
     });
   }

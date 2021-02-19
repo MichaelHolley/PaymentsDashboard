@@ -20,7 +20,7 @@
       <div class="form-group">
         <label for="tagsSelection">Tags</label>
         <select class="form-control" id="tagsSelection" formControlName="tags" multiple>
-          <option *ngFor="let tag of availableTags" [value]="tag">{{ tag.title }}</option>
+          <option *ngFor="let tag of availableTags" [value]="tag" [style.background-color]="tag.hexColorCode" class="text-beige">{{ tag.title }}</option>
         </select>
       </div>
       <div class="text-right">

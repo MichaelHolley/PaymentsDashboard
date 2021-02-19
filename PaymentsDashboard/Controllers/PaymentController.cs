@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Controllers
 {
@@ -14,56 +12,45 @@ namespace PaymentsDashboard.Controllers
 	public class PaymentController : ControllerBase
 	{
 		private readonly IPaymentService paymentService;
-		private readonly DataContext _context;
 
 		public PaymentController(IPaymentService paymentService, DataContext context)
 		{
 			this.paymentService = paymentService;
-			this._context = context;
 		}
 
 		[HttpGet]
-		public ActionResult<IEnumerable<PaymentViewModel>> GetPayments()
+		public ActionResult<IEnumerable<Payment>> GetPayments()
 		{
 			List<Payment> payments = paymentService.GetAllPayments().ToList();
+			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
 
-			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
-			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
-
-			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
-
-			return Ok(viewList);
+			return Ok(GetPaymentViewModels(payments));
 		}
 
 		[HttpGet("{numberOfMonths}")]
-		public ActionResult<IEnumerable<PaymentViewModel>> GetPaymentsByMonths(int numberOfMonths)
+		public ActionResult<IEnumerable<Payment>> GetPaymentsByMonths(int numberOfMonths)
 		{
 			List<Payment> payments = paymentService.GetPaymentsByMonths(numberOfMonths).ToList();
+			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
 
-			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
-			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
-
-			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
-
-			return Ok(viewList);
+			return Ok(GetPaymentViewModels(payments));
 		}
 
 		[HttpPost]
 		public ActionResult<Payment> CreateOrUpdatePayment(Payment payment)
 		{
-			if(payment.PaymentId.Equals(Guid.Empty))
+			if (payment.PaymentId.Equals(Guid.Empty))
 			{
-				return Ok(paymentService.CreatePayment(payment));
-			} else
+				return Ok(new PaymentViewModel(paymentService.CreatePayment(payment)));
+			}
+			else
 			{
-				Payment paymentById = paymentService.GetPaymentById(payment.PaymentId);
-				if (paymentById == null)
+				if (paymentService.GetPaymentById(payment.PaymentId) == null)
 				{
 					return BadRequest();
-				} else
-				{
-					return Ok(paymentService.UpdatePayment(payment));
 				}
+
+				return Ok(new PaymentViewModel(paymentService.UpdatePayment(payment)));
 			}
 		}
 
@@ -77,7 +64,15 @@ namespace PaymentsDashboard.Controllers
 				return NotFound();
 			}
 
-			return Ok(result);
+			return Ok(new PaymentViewModel(result));
+		}
+
+		private List<PaymentViewModel> GetPaymentViewModels(List<Payment> payments)
+		{
+			List<PaymentViewModel> viewModels = new List<PaymentViewModel>();
+			payments.ForEach(p => viewModels.Add(new PaymentViewModel(p)));
+
+			return viewModels;
 		}
 
 	}

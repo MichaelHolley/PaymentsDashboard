@@ -31,8 +31,8 @@ namespace PaymentsDashboard
 				configuration.RootPath = "ClientApp/dist";
 			});
 
-			services.AddDbContextPool<DataContext>(
-				options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 21)))
+			services.AddDbContext<DataContext>(
+				options => options.UseSqlite("Data Source=PaymentDashboard.db")
 			);
 
 			services.AddTransient<IPaymentService, PaymentService>();

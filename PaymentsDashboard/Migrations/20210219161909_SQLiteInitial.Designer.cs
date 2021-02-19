@@ -9,23 +9,22 @@ using PaymentsDashboard.Data;
 namespace PaymentsDashboard.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201202145641_EFC5.0Migration")]
-    partial class EFC50Migration
+    [Migration("20210219161909_SQLiteInitial")]
+    partial class SQLiteInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("PaymentTag", b =>
                 {
                     b.Property<Guid>("PaymentsPaymentId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("TagsTagId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PaymentsPaymentId", "TagsTagId");
 
@@ -38,16 +37,16 @@ namespace PaymentsDashboard.Migrations
                 {
                     b.Property<Guid>("PaymentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Date")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PaymentId");
 
@@ -58,13 +57,13 @@ namespace PaymentsDashboard.Migrations
                 {
                     b.Property<Guid>("TagId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("HexColorCode")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("TagId");
 
