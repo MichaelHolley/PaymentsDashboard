@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
+using PaymentsDashboard.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Controllers
 {
@@ -12,88 +11,60 @@ namespace PaymentsDashboard.Controllers
 	[ApiController]
 	public class TagController : ControllerBase
 	{
-		private readonly DataContext _context;
+		private readonly ITagService tagService;
 
-		public TagController(DataContext context)
+		public TagController(ITagService tagService)
 		{
-			_context = context;
+			this.tagService = tagService;
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
+		public ActionResult<IEnumerable<Tag>> GetTags()
 		{
-			return await _context.Tags.ToListAsync();
+			return Ok(tagService.GetAllTags().ToList());
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Tag>> GetTag(Guid id)
+		public ActionResult<Tag> GetTag(Guid id)
 		{
-			var tag = await _context.Tags.FindAsync(id);
-
-			if (tag == null)
+			Tag tag = tagService.GetTagById(id);
+			if(tag == null)
 			{
 				return NotFound();
 			}
 
-			return tag;
-		}
-
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutTag(Guid id, Tag tag)
-		{
-			if (id != tag.TagId)
-			{
-				return BadRequest();
-			}
-
-			_context.Entry(tag).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!TagExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return NoContent();
+			return Ok(tag);
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Tag>> PostTag(Tag tag)
+		public ActionResult<Tag> CreateOrUpdateTag(Tag tag)
 		{
-			_context.Tags.Add(tag);
-			await _context.SaveChangesAsync();
+			if (tag.TagId.Equals(Guid.Empty))
+			{
+				return Ok(tagService.CreateTag(tag));
+			}
+			else
+			{
+				if (tagService.GetTagById(tag.TagId) == null)
+				{
+					return NotFound();
+				}
 
-			return CreatedAtAction("GetTag", new { id = tag.TagId }, tag);
+				return Ok(tagService.UpdateTag(tag));
+			}
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ActionResult<Tag>> DeleteTag(Guid id)
+		public ActionResult<Tag> DeleteTag(Guid id)
 		{
-			var tag = await _context.Tags.FindAsync(id);
-			if (tag == null)
+			var result = tagService.DeleteTagById(id);
+
+			if (result == null)
 			{
 				return NotFound();
 			}
 
-			_context.Tags.Remove(tag);
-			await _context.SaveChangesAsync();
-
-			return tag;
-		}
-
-		private bool TagExists(Guid id)
-		{
-			return _context.Tags.Any(e => e.TagId == id);
+			return Ok(result);
 		}
 	}
 }

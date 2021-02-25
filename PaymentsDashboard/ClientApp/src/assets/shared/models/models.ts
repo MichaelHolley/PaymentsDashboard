@@ -14,6 +14,7 @@ export class Tag {
   id: string;
   title: string;
   hexColorCode: string;
+  payments: Payment[];
 }
 
 export class PaymentsPerDateModel {

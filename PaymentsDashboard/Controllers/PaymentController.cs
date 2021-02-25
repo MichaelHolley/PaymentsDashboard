@@ -13,7 +13,7 @@ namespace PaymentsDashboard.Controllers
 	{
 		private readonly IPaymentService paymentService;
 
-		public PaymentController(IPaymentService paymentService, DataContext context)
+		public PaymentController(IPaymentService paymentService)
 		{
 			this.paymentService = paymentService;
 		}
@@ -47,7 +47,7 @@ namespace PaymentsDashboard.Controllers
 			{
 				if (paymentService.GetPaymentById(payment.PaymentId) == null)
 				{
-					return BadRequest();
+					return NotFound();
 				}
 
 				return Ok(new PaymentViewModel(paymentService.UpdatePayment(payment)));

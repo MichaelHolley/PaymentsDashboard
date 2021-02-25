@@ -7,7 +7,6 @@ namespace PaymentsDashboard.Data.Services
 {
 	public class PaymentService : IPaymentService
 	{
-
 		private readonly DataContext _context;
 		public PaymentService(DataContext context)
 		{
