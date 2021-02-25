@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Controllers
 {
@@ -14,99 +12,45 @@ namespace PaymentsDashboard.Controllers
 	public class PaymentController : ControllerBase
 	{
 		private readonly IPaymentService paymentService;
-		private readonly DataContext _context;
 
 		public PaymentController(IPaymentService paymentService, DataContext context)
 		{
 			this.paymentService = paymentService;
-			this._context = context;
 		}
 
 		[HttpGet]
-		public ActionResult<IEnumerable<PaymentViewModel>> GetPayments()
+		public ActionResult<IEnumerable<Payment>> GetPayments()
 		{
 			List<Payment> payments = paymentService.GetAllPayments().ToList();
+			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
 
-			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
-			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
-
-			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
-
-			return viewList;
+			return Ok(GetPaymentViewModels(payments));
 		}
 
 		[HttpGet("{numberOfMonths}")]
-		public ActionResult<IEnumerable<PaymentViewModel>> GetPaymentsByMonths(int numberOfMonths)
+		public ActionResult<IEnumerable<Payment>> GetPaymentsByMonths(int numberOfMonths)
 		{
 			List<Payment> payments = paymentService.GetPaymentsByMonths(numberOfMonths).ToList();
+			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
 
-			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
-			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
-
-			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
-
-			return viewList;
+			return Ok(GetPaymentViewModels(payments));
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Payment>> CreateOrUpdatePayment(PaymentPostModel payment)
+		public ActionResult<Payment> CreateOrUpdatePayment(Payment payment)
 		{
-			if (payment.PaymentId == Guid.Empty)
+			if (payment.PaymentId.Equals(Guid.Empty))
 			{
-				Payment saved = new Payment(payment);
-				_context.Payments.Add(saved);
-
-				List<PaymentTagRelation> relations = new List<PaymentTagRelation>();
-				payment.TagIds.ToList<Guid>().ForEach(tagId =>
-				{
-					var tag = _context.Tags.Find(tagId);
-
-					if (tag == null)
-					{
-						return;
-					}
-
-					relations.Add(
-						new PaymentTagRelation()
-						{
-							Payment = saved,
-							Tag = tag
-						}
-					);
-				});
-
-				relations.ForEach(rel =>
-				{
-					_context.PaymentTagRelations.Add(rel);
-				});
-
-				saved.Tags = relations;
-
-				await _context.SaveChangesAsync();
-
-				return CreatedAtAction("GetPayment", new { id = payment.PaymentId }, payment);
+				return Ok(new PaymentViewModel(paymentService.CreatePayment(payment)));
 			}
 			else
 			{
-				_context.Entry(new Payment(payment)).State = EntityState.Modified;
-
-				try
+				if (paymentService.GetPaymentById(payment.PaymentId) == null)
 				{
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!PaymentExists(payment.PaymentId))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
+					return BadRequest();
 				}
 
-				return NoContent();
+				return Ok(new PaymentViewModel(paymentService.UpdatePayment(payment)));
 			}
 		}
 
@@ -120,12 +64,16 @@ namespace PaymentsDashboard.Controllers
 				return NotFound();
 			}
 
-			return Ok(result);
+			return Ok(new PaymentViewModel(result));
 		}
 
-		private bool PaymentExists(Guid id)
+		private List<PaymentViewModel> GetPaymentViewModels(List<Payment> payments)
 		{
-			return _context.Payments.Any(e => e.PaymentId == id);
+			List<PaymentViewModel> viewModels = new List<PaymentViewModel>();
+			payments.ForEach(p => viewModels.Add(new PaymentViewModel(p)));
+
+			return viewModels;
 		}
+
 	}
 }

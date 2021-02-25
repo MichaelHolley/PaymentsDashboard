@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Data.Services
 {
@@ -17,7 +16,7 @@ namespace PaymentsDashboard.Data.Services
 
 		public Payment GetPaymentById(Guid Id, bool tracked = false)
 		{
-			var payment = _context.Payments.Where(p => p.PaymentId.Equals(Id));
+			var payment = _context.Payments.Include(p => p.Tags).Where(p => p.PaymentId.Equals(Id));
 
 			if (!tracked)
 			{
@@ -29,7 +28,7 @@ namespace PaymentsDashboard.Data.Services
 
 		public IQueryable<Payment> GetAllPayments()
 		{
-			return _context.Payments.Include(r => r.Tags).ThenInclude(r => r.Tag);
+			return _context.Payments.Include(r => r.Tags);
 		}
 
 
@@ -37,19 +36,17 @@ namespace PaymentsDashboard.Data.Services
 		{
 			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
 
-			return _context.Payments.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-")).Include(r => r.Tags).ThenInclude(r => r.Tag);
+			return _context.Payments.Include(r => r.Tags).Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
 		}
 
 		public Payment DeletePaymentById(Guid id)
 		{
-			var payment = _context.Payments.Find(id);
+			var payment = GetPaymentById(id, true);
 
 			if (payment == null)
 			{
 				return null;
 			}
-
-			DeletePaymentTagRelationsByPaymentId(id);
 
 			_context.Payments.Remove(payment);
 			_context.SaveChanges();
@@ -57,19 +54,39 @@ namespace PaymentsDashboard.Data.Services
 			return payment;
 		}
 
-		public IEnumerable<PaymentTagRelation> DeletePaymentTagRelationsByPaymentId(Guid id)
+		public Payment CreatePayment(Payment payment)
 		{
-			var relations = _context.PaymentTagRelations.Where(r => r.Payment.PaymentId.Equals(id));
+			payment.Tags = GetTrackedTagsList(payment.Tags);
 
-			if (relations.Count() <= 0)
-			{
-				return null;
-			}
-
-			_context.PaymentTagRelations.RemoveRange(relations);
+			_context.Payments.Add(payment);
 			_context.SaveChanges();
 
-			return relations;
+			return payment;
+		}
+
+		public Payment UpdatePayment(Payment payment)
+		{
+			Payment paymentById = GetPaymentById(payment.PaymentId, true);
+
+			paymentById.Amount = payment.Amount;
+			paymentById.Date = payment.Date;
+			paymentById.Title = payment.Title;
+			paymentById.Tags = GetTrackedTagsList(payment.Tags);
+
+			_context.SaveChanges();
+
+			return paymentById;
+		}
+
+		private ICollection<Tag> GetTrackedTagsList(IEnumerable<Tag> tags)
+		{
+			List<Tag> trackedTags = new List<Tag>();
+			foreach (var tag in tags)
+			{
+				trackedTags.Add(_context.Tags.First(t => t.TagId.Equals(tag.TagId)));
+			}
+
+			return trackedTags;
 		}
 	}
 }

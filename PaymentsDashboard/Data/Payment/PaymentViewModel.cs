@@ -14,10 +14,14 @@ namespace PaymentsDashboard.Data
 			this.Amount = payment.Amount;
 			this.Date = payment.Date;
 
-			this.Tags = new List<Tag>();			
-			if(payment.Tags != null)
+			this.Tags = new List<Tag>();
+			if (payment.Tags != null)
 			{
-				payment.Tags.ToList().ForEach(tagRelation => this.Tags.Add(tagRelation.Tag));
+				payment.Tags.ToList().ForEach(tag =>
+				{
+					tag.Payments = null;
+					this.Tags.Add(tag);
+				});
 			}
 		}
 
@@ -25,6 +29,6 @@ namespace PaymentsDashboard.Data
 		public string Title { get; set; }
 		public decimal Amount { get; set; }
 		public string Date { get; set; }
-		public virtual ICollection<Tag> Tags { get; set; }
+		public ICollection<Tag> Tags { get; set; }
 	}
 }

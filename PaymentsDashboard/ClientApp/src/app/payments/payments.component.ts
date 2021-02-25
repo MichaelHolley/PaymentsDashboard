@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Tag, Payment, SortBy, PaymentPostModel, PaymentsPerDateModel } from '../../assets/shared/models/models';
+import { Tag, Payment, SortBy, PaymentsPerDateModel } from '../../assets/shared/models/models';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TagService } from '../../assets/shared/services/tag.service';
@@ -113,17 +113,11 @@ export class PaymentsComponent implements OnInit {
 
   onSubmit() {
     // TODO CHECK IF VALID
-    let postPayment: PaymentPostModel = new PaymentPostModel();
-    postPayment.paymentId = this.paymentForm.value.paymentId;
-    postPayment.title = this.paymentForm.value.title;
-    postPayment.amount = this.paymentForm.value.amount;
-    postPayment.date = this.paymentForm.value.date;
-    postPayment.tagIds = [];
-    this.paymentForm.value.tags.forEach(tag => { postPayment.tagIds.push(tag.tagId) });
+    let postPayment = this.paymentForm.value as Payment;
 
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
-      //TODO add result to payments-list of parent
       this.resetForm();
+      this.showForm = false;
       this.getPayments(this.numberOfDisplayedMonths, true);
     });
   }
