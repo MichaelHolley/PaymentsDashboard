@@ -21,7 +21,7 @@ namespace PaymentsDashboard.Controllers
 		[HttpGet]
 		public ActionResult<IEnumerable<Tag>> GetTags()
 		{
-			return Ok(tagService.GetAllTags().ToList());
+			return Ok(tagService.GetAllTags().ToList().RemoveCycle());
 		}
 
 		[HttpGet("{id}")]
@@ -33,7 +33,7 @@ namespace PaymentsDashboard.Controllers
 				return NotFound();
 			}
 
-			return Ok(tag);
+			return Ok(tag.RemoveCycle());
 		}
 
 		[HttpPost]
@@ -41,7 +41,7 @@ namespace PaymentsDashboard.Controllers
 		{
 			if (tag.TagId.Equals(Guid.Empty))
 			{
-				return Ok(tagService.CreateTag(tag));
+				return Ok(tagService.CreateTag(tag).RemoveCycle());
 			}
 			else
 			{
@@ -50,7 +50,7 @@ namespace PaymentsDashboard.Controllers
 					return NotFound();
 				}
 
-				return Ok(tagService.UpdateTag(tag));
+				return Ok(tagService.UpdateTag(tag).RemoveCycle());
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace PaymentsDashboard.Controllers
 				return NotFound();
 			}
 
-			return Ok(result);
+			return Ok(result.RemoveCycle());
 		}
 	}
 }

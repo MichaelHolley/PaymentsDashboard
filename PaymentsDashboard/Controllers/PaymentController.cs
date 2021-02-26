@@ -21,10 +21,10 @@ namespace PaymentsDashboard.Controllers
 		[HttpGet]
 		public ActionResult<IEnumerable<Payment>> GetPayments()
 		{
-			List<Payment> payments = paymentService.GetAllPayments().ToList();
+			var payments = paymentService.GetAllPayments().ToList();
 			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
 
-			return Ok(GetPaymentViewModels(payments));
+			return Ok(payments.RemoveCycle());
 		}
 
 		[HttpGet("{numberOfMonths}")]
@@ -33,7 +33,7 @@ namespace PaymentsDashboard.Controllers
 			List<Payment> payments = paymentService.GetPaymentsByMonths(numberOfMonths).ToList();
 			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
 
-			return Ok(GetPaymentViewModels(payments));
+			return Ok(payments.RemoveCycle());
 		}
 
 		[HttpPost]
@@ -41,7 +41,7 @@ namespace PaymentsDashboard.Controllers
 		{
 			if (payment.PaymentId.Equals(Guid.Empty))
 			{
-				return Ok(new PaymentViewModel(paymentService.CreatePayment(payment)));
+				return Ok(paymentService.CreatePayment(payment).RemoveCycle());
 			}
 			else
 			{
@@ -50,7 +50,7 @@ namespace PaymentsDashboard.Controllers
 					return NotFound();
 				}
 
-				return Ok(new PaymentViewModel(paymentService.UpdatePayment(payment)));
+				return Ok(paymentService.UpdatePayment(payment).RemoveCycle());
 			}
 		}
 
@@ -64,16 +64,7 @@ namespace PaymentsDashboard.Controllers
 				return NotFound();
 			}
 
-			return Ok(new PaymentViewModel(result));
+			return Ok(result.RemoveCycle());
 		}
-
-		private List<PaymentViewModel> GetPaymentViewModels(List<Payment> payments)
-		{
-			List<PaymentViewModel> viewModels = new List<PaymentViewModel>();
-			payments.ForEach(p => viewModels.Add(new PaymentViewModel(p)));
-
-			return viewModels;
-		}
-
 	}
 }
