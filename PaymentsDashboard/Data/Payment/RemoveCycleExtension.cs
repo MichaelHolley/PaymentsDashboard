@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PaymentsDashboard.Data
 {
@@ -10,10 +11,7 @@ namespace PaymentsDashboard.Data
 			{
 				foreach (var p in tag.Payments)
 				{
-					foreach (var t in p.Tags)
-					{
-						t.Payments = null;
-					}
+					p.RemoveCycle();
 				}
 			}
 			return tag;
@@ -25,31 +23,50 @@ namespace PaymentsDashboard.Data
 			{
 				foreach (var t in payment.Tags)
 				{
-					t.Payments = null;
+					t.Payments.Clear();
 				}
 			}
 
 			return payment;
 		}
 
-		public static ICollection<Tag> RemoveCycle(this ICollection<Tag> tags)
+		public static ICollection<Tag> RemoveCycle(this IQueryable<Tag> tags)
 		{
-			foreach (var tag in tags)
-			{
-				tag.RemoveCycle();
-			}
+			var result = tags.Select(t =>
+				new Tag()
+				{
+					TagId = t.TagId,
+					Title = t.Title,
+					HexColorCode = t.HexColorCode,
+					Payments = t.Payments.Select(p =>
+						new Payment()
+						{
+							PaymentId = p.PaymentId,
+							Title = p.Title,
+							Amount = p.Amount,
+							Date = p.Date,
+							Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null }).ToList()
+						}).ToList()
+				}
+			).ToList();
 
-			return tags;
+			return result;
 		}
 
-		public static ICollection<Payment> RemoveCycle(this ICollection<Payment> payments)
+		public static ICollection<Payment> RemoveCycle(this IQueryable<Payment> payments)
 		{
-			foreach (var p in payments)
-			{
-				p.RemoveCycle();
-			}
+			var result = payments.Select(p =>
+					new Payment()
+					{
+						PaymentId = p.PaymentId,
+						Title = p.Title,
+						Amount = p.Amount,
+						Date = p.Date,
+						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null }).ToList()
+					}
+				).ToList();
 
-			return payments;
+				return result;
 		}
 	}
 }

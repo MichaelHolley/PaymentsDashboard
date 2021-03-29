@@ -21,8 +21,7 @@ namespace PaymentsDashboard.Controllers
 		[HttpGet]
 		public ActionResult<IEnumerable<Payment>> GetPayments()
 		{
-			var payments = paymentService.GetAllPayments().ToList();
-			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
+			var payments = paymentService.GetAllPayments();
 
 			return Ok(payments.RemoveCycle());
 		}
@@ -30,9 +29,7 @@ namespace PaymentsDashboard.Controllers
 		[HttpGet("{numberOfMonths}")]
 		public ActionResult<IEnumerable<Payment>> GetPaymentsByMonths(int numberOfMonths)
 		{
-			List<Payment> payments = paymentService.GetPaymentsByMonths(numberOfMonths).ToList();
-			payments.Sort((Payment a, Payment b) => { return b.Date.CompareTo(a.Date); });
-
+			var payments = paymentService.GetPaymentsByMonths(numberOfMonths);
 			return Ok(payments.RemoveCycle());
 		}
 

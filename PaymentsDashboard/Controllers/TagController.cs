@@ -21,7 +21,7 @@ namespace PaymentsDashboard.Controllers
 		[HttpGet]
 		public ActionResult<IEnumerable<Tag>> GetTags()
 		{
-			return Ok(tagService.GetAllTags().ToList().RemoveCycle());
+			return Ok(tagService.GetAllTags().RemoveCycle());
 		}
 
 		[HttpGet("{id}")]
