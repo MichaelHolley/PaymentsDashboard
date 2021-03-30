@@ -1,6 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --orange-crayola: #FF6B35;
+  --peach-crayola: #F7C59F;
+  --beige: #EFEFD0;
+  --usafa-blue: #004E89;
+  --saphire-blue: #1A659E;
+}
 
-/* Provide sufficient contrast against white background */
+* {
+  font-family: 'Lato', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 a {
   color: #0366d6;
 }
@@ -9,13 +22,72 @@ code {
   color: #e01a76;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.btn:focus {
+  outline: none;
+  box-shadow: none;
 }
+
+.btn-primary {
+  color: var(--beige);
+  background-color: var(--orange-crayola);
+  border-color: var(--peach-crayola);
+}
+
+  .btn-primary:hover,
+  .btn-primary:active,
+  .btn-primary:focus {
+    color: var(--orange-crayola) !important;
+    background-color: var(--peach-crayola) !important;
+    border-color: var(--peach-crayola) !important;
+  }
+
+.btn-outline-primary {
+  color: var(--orange-crayola);
+  border-color: var(--orange-crayola);
+}
+
+  .btn-outline-primary:hover,
+  .btn-outline-primary:active,
+  .btn-outline-primary:focus {
+    color: var(--beige) !important;
+    background-color: var(--orange-crayola) !important;
+    border-color: var(--orange-crayola) !important;
+  }
 
 .hoverable:hover {
   background-color: rgb(235, 235, 235) !important;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.navbar {
+  background-color: var(--orange-crayola);
+}
+
+.navbar-nav > .nav-item:hover {
+  background-color: var(--peach-crayola);
+}
+
+.nav-collapse-btn,
+.navbar-nav > .nav-item > .nav-link {
+  font-size: 1.25rem;
+  color: var(--beige);
+}
+
+  .nav-collapse-btn:hover,
+  .navbar-nav > .nav-item > .nav-link:hover {
+    font-size: 1.25rem;
+    color: var(--orange-crayola);
+  }
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+.nav-collapse-btn > a:link,
+.nav-collapse-btn > a:visited {
+  color: var(--orange-crayola);
+}
+
+.text-beige {
+  color: var(--beige);
 }

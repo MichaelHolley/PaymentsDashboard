@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
+using PaymentsDashboard.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Controllers
 {
@@ -12,123 +11,57 @@ namespace PaymentsDashboard.Controllers
 	[ApiController]
 	public class PaymentController : ControllerBase
 	{
-		private readonly DataContext _context;
+		private readonly IPaymentService paymentService;
 
-		public PaymentController(DataContext context)
+		public PaymentController(IPaymentService paymentService)
 		{
-			_context = context;
+			this.paymentService = paymentService;
 		}
 
 		[HttpGet]
-		public ActionResult<IEnumerable<PaymentViewModel>> GetPayments()
+		public ActionResult<IEnumerable<Payment>> GetPayments()
 		{
-			List<Payment> payments = _context.Payments.AsNoTracking().Include(r => r.Tags).ThenInclude(r => r.Tag).ToList();
+			var payments = paymentService.GetAllPayments();
 
-			List<PaymentViewModel> viewList = new List<PaymentViewModel>();
-			payments.ForEach(payment => viewList.Add(new PaymentViewModel(payment)));
-
-			viewList.Sort((PaymentViewModel a, PaymentViewModel b) => { return b.Date.CompareTo(a.Date); });
-
-			return viewList;
+			return Ok(payments.RemoveCycle());
 		}
 
-		[HttpGet("{id}")]
-		public async Task<ActionResult<Payment>> GetPayment(Guid id)
+		[HttpGet("{numberOfMonths}")]
+		public ActionResult<IEnumerable<Payment>> GetPaymentsByMonths(int numberOfMonths)
 		{
-			var payment = await _context.Payments.FindAsync(id);
-
-			if (payment == null)
-			{
-				return NotFound();
-			}
-
-			return payment;
-		}
-
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutPayment(Guid id, PaymentPostModel payment)
-		{
-			if (id != payment.PaymentId)
-			{
-				return BadRequest();
-			}
-
-			_context.Entry(new Payment(payment)).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!PaymentExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return NoContent();
+			var payments = paymentService.GetPaymentsByMonths(numberOfMonths);
+			return Ok(payments.RemoveCycle());
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Payment>> PostPayment(PaymentPostModel payment)
+		public ActionResult<Payment> CreateOrUpdatePayment(Payment payment)
 		{
-			Payment saved = new Payment(payment);
-			_context.Payments.Add(saved);
-
-			List<PaymentTagRelation> relations = new List<PaymentTagRelation>();
-			payment.TagIds.ToList<Guid>().ForEach(tagId =>
+			if (payment.PaymentId.Equals(Guid.Empty))
 			{
-				var tag = _context.Tags.Find(tagId);
-
-				if (tag == null)
+				return Ok(paymentService.CreatePayment(payment).RemoveCycle());
+			}
+			else
+			{
+				if (paymentService.GetPaymentById(payment.PaymentId) == null)
 				{
-					return;
+					return NotFound();
 				}
 
-				relations.Add(
-					new PaymentTagRelation()
-					{
-						Payment = saved,
-						Tag = tag
-					}
-				);
-			});
-
-			relations.ForEach(rel =>
-			{
-				_context.PaymentTagRelations.Add(rel);
-			});
-
-			saved.Tags = relations;
-
-			await _context.SaveChangesAsync();
-
-			return CreatedAtAction("GetPayment", new { id = payment.PaymentId }, payment);
+				return Ok(paymentService.UpdatePayment(payment).RemoveCycle());
+			}
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ActionResult<Payment>> DeletePayment(Guid id)
+		public ActionResult<Payment> DeletePayment(Guid id)
 		{
-			var payment = await _context.Payments.FindAsync(id);
-			if (payment == null)
+			var result = paymentService.DeletePaymentById(id);
+
+			if (result == null)
 			{
 				return NotFound();
 			}
 
-			_context.Payments.Remove(payment);
-			await _context.SaveChangesAsync();
-
-			return payment;
-		}
-
-		private bool PaymentExists(Guid id)
-		{
-			return _context.Payments.Any(e => e.PaymentId == id);
+			return Ok(result.RemoveCycle());
 		}
 	}
 }

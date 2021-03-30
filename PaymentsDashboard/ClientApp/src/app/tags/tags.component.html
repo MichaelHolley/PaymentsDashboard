@@ -1,12 +1,29 @@
-<button class="btn btn-primary mb-2" (click)="tagsButtonAction()">Tag-Administration</button>
-<div *ngIf="showTagsComponent">
-  <h3>
-    Tags
-  </h3>
-  <form>
-    <input type="text" class="form-control" placeholder="Title" />
-    <input type="color" class="form-control" placeholder="Tag-Color" />
-  </form>
+<div class="my-2">
+  <button class="btn btn-primary mb-2" (click)="addButtonAction()">New Tag</button>
+  <div *ngIf="showForm" class="mb-2">
+    <h3>
+      New Tag
+    </h3>
+    <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
+      <div class="row mb-2">
+        <div class="col-md-6 formGroup">
+          <label for="titleInput">Title</label>
+          <input type="text" id="titleInput" class="form-control" formControlName="title" />
+        </div>
+        <div class="col-md-6 formGroup">
+          <label for="colorInput">Color</label>
+          <input type="color" id="colorInput" class="form-control p-0" formControlName="hexColorCode" />
+        </div>
+      </div>
+      <div class="text-right">
+        <button class="btn btn-outline-primary mr-2" type="button" (click)="resetForm()">Reset</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="my-1">
   <table class="table table-condensed table-hover">
     <thead>
       <tr>
@@ -16,14 +33,22 @@
         <th>
           Color
         </th>
+        <th>
+          # of Payments
+        </th>
+        <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody *ngIf="existingTags">
       <tr *ngFor="let tag of existingTags">
         <td>{{ tag.title }}</td>
-        <td [style.background-color]="tag.hexColorCode"></td>
+        <td [style.background-color]="tag.hexColorCode">{{ tag.hexColorCode }}</td>
+        <td>{{ tag.payments.length }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary" (click)="editTag(tag)">Edit</button>
+          <button class="btn btn-sm btn-outline-primary" (click)="deleteTag(tag)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>
-  <hr />
 </div>

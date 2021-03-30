@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Tag, Payment, SortBy, PaymentPostModel } from '../../assets/shared/models/models';
+import { Tag, Payment, SortBy, PaymentsPerDateModel } from '../../assets/shared/models/models';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TagService } from '../../assets/shared/services/tag.service';
@@ -13,18 +13,19 @@ export class PaymentsComponent implements OnInit {
   availableTags: Tag[];
   usedTags: Tag[] = [];
 
-  displayedPayments: { date: string, payments: Payment[] }[];
+  numberOfDisplayedMonths: number;
+  displayedPayments: PaymentsPerDateModel[];
 
   showForm = false;
   paymentForm: FormGroup;
 
   resetFromJSON = {
-    id: undefined,
+    paymentId: undefined,
     title: '',
     amount: 0,
     date: this.dateToString(new Date),
     tags: []
-  }  
+  }
 
   constructor(private tagsService: TagService,
     private paymentService: PaymentService,
@@ -40,15 +41,20 @@ export class PaymentsComponent implements OnInit {
       tags: [[]]
     });
 
-    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
+    this.getTags();
 
-    this.getPayments();
-  }
-
-  getPayments() {
+    this.numberOfDisplayedMonths = 0;
     this.displayedPayments = [];
 
-    this.paymentService.getAllPayments().subscribe(result => {
+    this.getPayments(this.numberOfDisplayedMonths);
+  }
+
+  getPayments(numberOfMonths: number, clearExisting: boolean = false) {
+    if (clearExisting) {
+      this.displayedPayments = [];
+    }
+
+    this.paymentService.getPaymentsByMonths(numberOfMonths).subscribe(result => {
       result.forEach(r => {
         let p: Payment = {
           paymentId: r.paymentId,
@@ -58,12 +64,17 @@ export class PaymentsComponent implements OnInit {
           tags: r.tags
         };
 
-        if (this.displayedPayments.length == 0 || new Date(this.displayedPayments[this.displayedPayments.length - 1].date).getTime() != new Date(p.date).getTime()) {
+        if (this.getIndexOfDate(p) == -1) {
           this.displayedPayments.push({ date: p.date, payments: [] });
+          this.displayedPayments[this.displayedPayments.length - 1].payments.push(p);
+        } else {
+          this.displayedPayments[this.getIndexOfDate(p)].payments.push(p);
         }
-        this.displayedPayments[this.displayedPayments.length - 1].payments.push(p);
-        this.displayedPayments[this.displayedPayments.length - 1].payments.sort((a: Payment, b: Payment) => { return b.amount - a.amount; })
       });
+
+      this.displayedPayments.sort((a: PaymentsPerDateModel, b: PaymentsPerDateModel) => { return new Date(b.date).getTime() - new Date(a.date).getTime(); });
+
+      this.displayedPayments[this.displayedPayments.length - 1].payments.sort((a: Payment, b: Payment) => { return b.amount - a.amount; })
 
       result.forEach(payment => {
         if (payment.tags) {
@@ -72,9 +83,26 @@ export class PaymentsComponent implements OnInit {
           });
         }
       });
-
-      console.log(this.displayedPayments);
     });
+  }
+
+  getTags() {
+    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
+  }
+
+  getIndexOfDate(payment: Payment) {
+    let index = -1;
+    for (let i = 0; i < this.displayedPayments.length; i++) {
+      if (new Date(this.displayedPayments[i].date).getTime() == new Date(payment.date).getTime()) {
+        return i;
+      }
+    }
+    return index;
+  }
+
+  getPreviousMonth() {
+    this.numberOfDisplayedMonths++;
+    this.getPayments(this.numberOfDisplayedMonths);
   }
 
   addToUsedTags(tag: Tag) {
@@ -88,26 +116,23 @@ export class PaymentsComponent implements OnInit {
   }
 
   onSubmit() {
-    // TODO CHECK IF VALID
-    let postPayment: PaymentPostModel = new PaymentPostModel();
-    postPayment.paymentId = this.paymentForm.value.id;
-    postPayment.title = this.paymentForm.value.title;
-    postPayment.amount = this.paymentForm.value.amount;
-    postPayment.date = this.paymentForm.value.date;
-    postPayment.tagIds = [];
-    this.paymentForm.value.tags.forEach(tag => { postPayment.tagIds.push(tag.tagId) });
+    if (this.paymentForm.invalid) {
+      return;
+    }
+
+    let postPayment = this.paymentForm.value as Payment;
 
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
-      //TODO add result to payments-list of parent
       this.resetForm();
-      this.getPayments();
+      this.showForm = false;
+      this.getPayments(this.numberOfDisplayedMonths, true);
     });
   }
 
   editPayment(payment: Payment) {
     this.showForm = true;
 
-    console.log(payment)
+    window.scroll(0, 0);
 
     this.paymentForm.patchValue({
       paymentId: payment.paymentId,
@@ -116,17 +141,21 @@ export class PaymentsComponent implements OnInit {
       date: payment.date,
       tags: payment.tags
     });
-
-    console.log(this.paymentForm.value)
   }
 
-  paymentAddButtonAction() {
+  addButtonAction() {
     this.showForm = !this.showForm;
     this.resetForm();
-    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result });
+    this.getTags();
   }
 
   dateToString(date: Date) {
     return (date.getFullYear() + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())));
+  }
+
+  deletePayment(payment: Payment) {
+    this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
+      this.getPayments(this.numberOfDisplayedMonths, true);
+    });
   }
 }

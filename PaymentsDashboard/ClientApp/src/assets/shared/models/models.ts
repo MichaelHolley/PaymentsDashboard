@@ -10,16 +10,14 @@ export class Payment {
   tags: Tag[];
 }
 
-export class PaymentPostModel {
-  paymentId: string;
-  title: string;
-  amount: number;
-  date: string;
-  tagIds: string[];
-}
-
 export class Tag {
-  id: string;
+  tagId: string;
   title: string;
   hexColorCode: string;
+  payments: Payment[];
+}
+
+export class PaymentsPerDateModel {
+  date: string;
+  payments: Payment[];
 }

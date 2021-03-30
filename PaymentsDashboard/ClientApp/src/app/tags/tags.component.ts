@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Tag } from '../../assets/shared/models/models';
 import { TagService } from '../../assets/shared/services/tag.service';
 
@@ -8,21 +9,74 @@ import { TagService } from '../../assets/shared/services/tag.service';
 })
 export class TagsComponent implements OnInit {
 
-  showTagsComponent = false;
+  showForm = false;
+  tagForm: FormGroup;
 
   existingTags: Tag[];
 
-  constructor(private tagsService: TagService) {
-    this.tagsService.getAllTags().subscribe(result => {
+  resetFromJSON = {
+    tagId: undefined,
+    title: "",
+    hexColorCode: "#ffffff"
+  }
+
+  constructor(private tagService: TagService,
+    private formBuilder: FormBuilder) {
+  }
+
+  ngOnInit() {
+    this.tagForm = this.formBuilder.group({
+      tagId: [undefined],
+      title: ["", Validators.required],
+      hexColorCode: ["#ffffff"]
+    });
+
+    this.getTags();
+  }
+
+  getTags() {
+    this.tagService.getAllTags().subscribe(result => {
       this.existingTags = result;
     });
   }
 
-  ngOnInit() {
+  resetForm() {
+    this.tagForm.patchValue(this.resetFromJSON);
   }
 
-  tagsButtonAction() {
-    this.showTagsComponent = !this.showTagsComponent;
+  editTag(tag: Tag) {
+    this.showForm = true;
+
+    window.scroll(0, 0);
+
+    this.tagForm.patchValue({
+      tagId: tag.tagId,
+      title: tag.title,
+      hexColorCode: tag.hexColorCode
+    });
+  }
+
+  addButtonAction() {
+    this.showForm = !this.showForm;
+    this.resetForm();
+  }
+
+  onSubmit() {
+    if (this.tagForm.invalid) {
+      return;
+    }
+
+    let postTag = this.tagForm.value as Tag;
+
+    this.tagService.createOrUpdateTag(postTag).subscribe(result => {
+      this.resetForm();
+      this.showForm = false;
+      this.getTags();
+    });
+  }
+
+  deleteTag(tag: Tag) {
+    this.tagService.deleteTag(tag.tagId).subscribe(result => this.getTags());
   }
 
 }

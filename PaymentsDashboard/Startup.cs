@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PaymentsDashboard.Data;
+using PaymentsDashboard.Data.Services;
+using PaymentsDashboard.Services;
+using System;
 
 namespace PaymentsDashboard
 {
@@ -29,8 +32,12 @@ namespace PaymentsDashboard
 				configuration.RootPath = "ClientApp/dist";
 			});
 
-			services.AddDbContextPool<DataContext>(
-				options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+			services.AddDbContext<DataContext>(
+				options => options.UseSqlite("Data Source=PaymentDashboard.db")
+			);
+
+			services.AddTransient<IPaymentService, PaymentService>();
+			services.AddTransient<ITagService, TagService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
