@@ -49,11 +49,7 @@ export class TagsComponent implements OnInit {
 
     window.scroll(0, 0);
 
-    this.tagForm.patchValue({
-      tagId: tag.tagId,
-      title: tag.title,
-      hexColorCode: tag.hexColorCode
-    });
+    this.tagForm.patchValue(tag);
   }
 
   addButtonAction() {

@@ -52,17 +52,18 @@ export class PaymentsComponent implements OnInit {
   getPayments(numberOfMonths: number, clearExisting: boolean = false) {
     if (clearExisting) {
       this.displayedPayments = [];
+      for (let i = 0; i < numberOfMonths; i++) {
+        this.getPaymentsByMonths(i);
+      }
     }
 
+    this.getPaymentsByMonths(numberOfMonths);
+  }
+
+  getPaymentsByMonths(numberOfMonths) {
     this.paymentService.getPaymentsByMonths(numberOfMonths).subscribe(result => {
       result.forEach(r => {
-        let p: Payment = {
-          paymentId: r.paymentId,
-          title: r.title,
-          amount: r.amount,
-          date: r.date,
-          tags: r.tags
-        };
+        let p: Payment = r as Payment;
 
         if (this.getIndexOfDate(p) == -1) {
           this.displayedPayments.push({ date: p.date, payments: [] });
@@ -134,13 +135,7 @@ export class PaymentsComponent implements OnInit {
 
     window.scroll(0, 0);
 
-    this.paymentForm.patchValue({
-      paymentId: payment.paymentId,
-      title: payment.title,
-      amount: payment.amount,
-      date: payment.date,
-      tags: payment.tags
-    });
+    this.paymentForm.patchValue(payment);
   }
 
   addButtonAction() {
