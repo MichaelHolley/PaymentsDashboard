@@ -11,7 +11,7 @@ export class Payment {
 }
 
 export class Tag {
-  id: string;
+  tagId: string;
   title: string;
   hexColorCode: string;
   payments: Payment[];
