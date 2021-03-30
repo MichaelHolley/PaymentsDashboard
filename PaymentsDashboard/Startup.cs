@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Services;
+using PaymentsDashboard.Services;
 using System;
 
 namespace PaymentsDashboard
@@ -36,6 +37,7 @@ namespace PaymentsDashboard
 			);
 
 			services.AddTransient<IPaymentService, PaymentService>();
+			services.AddTransient<ITagService, TagService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

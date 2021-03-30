@@ -41,7 +41,7 @@ export class PaymentsComponent implements OnInit {
       tags: [[]]
     });
 
-    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
+    this.getTags();
 
     this.numberOfDisplayedMonths = 0;
     this.displayedPayments = [];
@@ -86,6 +86,10 @@ export class PaymentsComponent implements OnInit {
     });
   }
 
+  getTags() {
+    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
+  }
+
   getIndexOfDate(payment: Payment) {
     let index = -1;
     for (let i = 0; i < this.displayedPayments.length; i++) {
@@ -112,7 +116,10 @@ export class PaymentsComponent implements OnInit {
   }
 
   onSubmit() {
-    // TODO CHECK IF VALID
+    if (this.paymentForm.invalid) {
+      return;
+    }
+
     let postPayment = this.paymentForm.value as Payment;
 
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
@@ -136,10 +143,10 @@ export class PaymentsComponent implements OnInit {
     });
   }
 
-  paymentAddButtonAction() {
+  addButtonAction() {
     this.showForm = !this.showForm;
     this.resetForm();
-    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result });
+    this.getTags();
   }
 
   dateToString(date: Date) {

@@ -7,7 +7,6 @@ namespace PaymentsDashboard.Data.Services
 {
 	public class PaymentService : IPaymentService
 	{
-
 		private readonly DataContext _context;
 		public PaymentService(DataContext context)
 		{
@@ -28,7 +27,7 @@ namespace PaymentsDashboard.Data.Services
 
 		public IQueryable<Payment> GetAllPayments()
 		{
-			return _context.Payments.Include(r => r.Tags);
+			return _context.Payments.Include(r => r.Tags).OrderBy(p => p.Date);
 		}
 
 
@@ -36,7 +35,7 @@ namespace PaymentsDashboard.Data.Services
 		{
 			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
 
-			return _context.Payments.Include(r => r.Tags).Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
+			return GetAllPayments().Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
 		}
 
 		public Payment DeletePaymentById(Guid id)

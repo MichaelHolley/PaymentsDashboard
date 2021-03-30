@@ -16,12 +16,8 @@ export class TagService {
     return this.httpClient.get<Tag[]>(this.URL);
   }
 
-  createTag(tag: Tag): Observable<any> {
+  createOrUpdateTag(tag: Tag): Observable<any> {
     return this.httpClient.post<Tag>(this.URL, tag);
-  }
-
-  updateTag(tag: Tag): Observable<any> {
-    return this.httpClient.put<Tag>(this.URL + '/' + tag.id, tag);
   }
 
   deleteTag(id: string): Observable<Tag> {
