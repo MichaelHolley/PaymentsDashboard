@@ -91,3 +91,13 @@ code {
 .text-beige {
   color: var(--beige);
 }
+
+.icon {
+  color: var(--orange-crayola);
+  fill: var(--orange-crayola);
+}
+
+.icon:hover {
+    cursor: pointer;
+    color: var(--peach-crayola);
+  }

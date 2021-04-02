@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Tag, Payment, SortBy, PaymentsPerDateModel } from '../../assets/shared/models/models';
-import { PaymentService } from '../../assets/shared/services/payment.service';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
+import { Payment, PaymentsPerDateModel, Tag } from '../../assets/shared/models/models';
+import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
 
 @Component({
@@ -9,6 +10,10 @@ import { TagService } from '../../assets/shared/services/tag.service';
   templateUrl: './payments.component.html'
 })
 export class PaymentsComponent implements OnInit {
+  faPlusCircle = faPlusCircle;
+  faTrash = faTrash;
+  faEdit = faEdit;
+  faUndoAlt = faUndoAlt;
 
   availableTags: Tag[];
   usedTags: Tag[] = [];
@@ -46,7 +51,7 @@ export class PaymentsComponent implements OnInit {
     this.numberOfDisplayedMonths = 0;
     this.displayedPayments = [];
 
-    this.getPayments(this.numberOfDisplayedMonths);
+    this.getPayments(this.numberOfDisplayedMonths, true);
   }
 
   getPayments(numberOfMonths: number, clearExisting: boolean = false) {
@@ -62,6 +67,10 @@ export class PaymentsComponent implements OnInit {
 
   getPaymentsByMonths(numberOfMonths) {
     this.paymentService.getPaymentsByMonths(numberOfMonths).subscribe(result => {
+      if (result == null || result.length == 0) {
+        return;
+      }
+
       result.forEach(r => {
         let p: Payment = r as Payment;
 

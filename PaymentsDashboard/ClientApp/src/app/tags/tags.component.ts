@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
 import { Tag } from '../../assets/shared/models/models';
 import { TagService } from '../../assets/shared/services/tag.service';
 
@@ -8,6 +9,10 @@ import { TagService } from '../../assets/shared/services/tag.service';
   templateUrl: './tags.component.html',
 })
 export class TagsComponent implements OnInit {
+  faPlusCircle = faPlusCircle;
+  faTrash = faTrash;
+  faEdit = faEdit;
+  faUndoAlt = faUndoAlt;
 
   showForm = false;
   tagForm: FormGroup;
