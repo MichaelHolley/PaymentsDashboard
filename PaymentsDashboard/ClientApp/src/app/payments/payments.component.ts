@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Tag, Payment, SortBy, PaymentsPerDateModel } from '../../assets/shared/models/models';
-import { PaymentService } from '../../assets/shared/services/payment.service';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
+import { Payment, PaymentsPerDateModel, Tag } from '../../assets/shared/models/models';
+import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
 
 @Component({
@@ -9,6 +10,10 @@ import { TagService } from '../../assets/shared/services/tag.service';
   templateUrl: './payments.component.html'
 })
 export class PaymentsComponent implements OnInit {
+  faPlusCircle = faPlusCircle;
+  faTrash = faTrash;
+  faEdit = faEdit;
+  faUndoAlt = faUndoAlt;
 
   availableTags: Tag[];
   usedTags: Tag[] = [];
@@ -46,23 +51,28 @@ export class PaymentsComponent implements OnInit {
     this.numberOfDisplayedMonths = 0;
     this.displayedPayments = [];
 
-    this.getPayments(this.numberOfDisplayedMonths);
+    this.getPayments(this.numberOfDisplayedMonths, true);
   }
 
   getPayments(numberOfMonths: number, clearExisting: boolean = false) {
     if (clearExisting) {
       this.displayedPayments = [];
+      for (let i = 0; i < numberOfMonths; i++) {
+        this.getPaymentsByMonths(i);
+      }
     }
 
+    this.getPaymentsByMonths(numberOfMonths);
+  }
+
+  getPaymentsByMonths(numberOfMonths) {
     this.paymentService.getPaymentsByMonths(numberOfMonths).subscribe(result => {
+      if (result == null || result.length == 0) {
+        return;
+      }
+
       result.forEach(r => {
-        let p: Payment = {
-          paymentId: r.paymentId,
-          title: r.title,
-          amount: r.amount,
-          date: r.date,
-          tags: r.tags
-        };
+        let p: Payment = r as Payment;
 
         if (this.getIndexOfDate(p) == -1) {
           this.displayedPayments.push({ date: p.date, payments: [] });
@@ -134,13 +144,7 @@ export class PaymentsComponent implements OnInit {
 
     window.scroll(0, 0);
 
-    this.paymentForm.patchValue({
-      paymentId: payment.paymentId,
-      title: payment.title,
-      amount: payment.amount,
-      date: payment.date,
-      tags: payment.tags
-    });
+    this.paymentForm.patchValue(payment);
   }
 
   addButtonAction() {

@@ -1,5 +1,5 @@
 <div class="my-2">
-  <button class="btn btn-primary mb-2" (click)="addButtonAction()">New Tag</button>
+  <button class="btn btn-primary mb-2" (click)="addButtonAction()"><fa-icon [icon]="faPlusCircle"></fa-icon> New Tag</button>
   <div *ngIf="showForm" class="mb-2">
     <h3>
       New Tag
@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="text-right">
-        <button class="btn btn-outline-primary mr-2" type="button" (click)="resetForm()">Reset</button>
+        <button class="btn btn-outline-primary mr-2" type="button" (click)="resetForm()"><fa-icon [icon]="faUndoAlt"></fa-icon> Reset</button>
         <button class="btn btn-primary" type="submit">Submit</button>
       </div>
     </form>
@@ -45,8 +45,8 @@
         <td [style.background-color]="tag.hexColorCode">{{ tag.hexColorCode }}</td>
         <td>{{ tag.payments.length }}</td>
         <td>
-          <button class="btn btn-sm btn-outline-primary" (click)="editTag(tag)">Edit</button>
-          <button class="btn btn-sm btn-outline-primary" (click)="deleteTag(tag)">Delete</button>
+          <a class="col" (click)="editTag(tag)"><fa-icon class="icon" [icon]="faEdit"></fa-icon></a>
+          <a class="col" (click)="deleteTag(tag)"><fa-icon class="icon" [icon]="faTrash"></fa-icon></a>
         </td>
       </tr>
     </tbody>
