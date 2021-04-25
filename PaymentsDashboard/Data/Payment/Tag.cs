@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PaymentsDashboard.Data
 {
-	public class Tag
+	public class Tag : CreatedBase
 	{
 		public Guid TagId { get; set; }
 		public string Title { get; set; }

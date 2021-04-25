@@ -56,6 +56,7 @@ namespace PaymentsDashboard.Data.Services
 		public Payment CreatePayment(Payment payment)
 		{
 			payment.Tags = GetTrackedTagsList(payment.Tags);
+			payment.Created = DateTime.Now;
 
 			_context.Payments.Add(payment);
 			_context.SaveChanges();
