@@ -1,8 +1,20 @@
-<div class="my-2">
-  <apx-chart [series]="chartOptions.series"
-             [chart]="chartOptions.chart"
-             [xaxis]="chartOptions.xaxis"
-             [yaxis]="chartOptions.yaxis"
-             [dataLabels]="chartOptions.dataLabels"
-             [grid]="chartOptions.grid"></apx-chart>
+<div class="my-2 row">
+  <div class="col-md-6 col-12">
+    <apx-chart *ngIf="scatterChartOptions" [series]="scatterChartOptions.series"
+               [title]="scatterChartOptions.title"
+               [chart]="scatterChartOptions.chart"
+               [xaxis]="scatterChartOptions.xaxis"
+               [yaxis]="scatterChartOptions.yaxis"
+               [dataLabels]="scatterChartOptions.dataLabels"
+               [plotOptions]="scatterChartOptions.plotOptions"></apx-chart>
+  </div>
+  <div class="col-md-6 col-12">
+    <apx-chart *ngIf="dailySumChartOptions" [series]="dailySumChartOptions.series"
+               [title]="dailySumChartOptions.title"
+               [chart]="dailySumChartOptions.chart"
+               [xaxis]="dailySumChartOptions.xaxis"
+               [yaxis]="dailySumChartOptions.yaxis"
+               [dataLabels]="dailySumChartOptions.dataLabels"
+               [plotOptions]="dailySumChartOptions.plotOptions"></apx-chart>
+  </div>
 </div>
