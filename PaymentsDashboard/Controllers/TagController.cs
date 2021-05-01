@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
-using PaymentsDashboard.Data.Services;
+using PaymentsDashboard.Data.Modells;
+using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PaymentsDashboard.Controllers
 {

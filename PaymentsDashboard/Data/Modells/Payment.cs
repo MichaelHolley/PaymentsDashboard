@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace PaymentsDashboard.Data
+namespace PaymentsDashboard.Data.Modells
 {
 	public class Payment : CreatedBase
 	{
 		public Guid PaymentId { get; set; }
 		public string Title { get; set; }
 		public decimal Amount { get; set; }
+
+		[Required]
 		public string Date { get; set; }
 		public ICollection<Tag> Tags { get; set; }
 	}

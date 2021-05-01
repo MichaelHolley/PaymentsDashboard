@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PaymentsDashboard.Data.Modells;
 
 namespace PaymentsDashboard.Data
 {
@@ -38,6 +39,7 @@ namespace PaymentsDashboard.Data
 					TagId = t.TagId,
 					Title = t.Title,
 					HexColorCode = t.HexColorCode,
+					Type = t.Type,
 					Payments = t.Payments.Select(p =>
 						new Payment()
 						{

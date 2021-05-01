@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PaymentsDashboard.Data;
-using PaymentsDashboard.Data.Services;
 using PaymentsDashboard.Services;
 using System;
 

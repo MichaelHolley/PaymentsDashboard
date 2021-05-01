@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
-using PaymentsDashboard.Data.Services;
+using PaymentsDashboard.Data.Modells;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Services
 {
