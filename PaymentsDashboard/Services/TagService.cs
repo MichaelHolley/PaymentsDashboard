@@ -45,6 +45,16 @@ namespace PaymentsDashboard.Services
 			return _context.Tags.Include(r => r.Payments);
 		}
 
+		public IQueryable<Tag> GetPrimaryTags()
+		{
+			return _context.Tags.Include(r => r.Payments).Where(r => r.Type.Equals(TagType.Primary));
+		}
+
+		public IQueryable<Tag> GetSecondaryTags()
+		{
+			return _context.Tags.Include(r => r.Payments).Where(r => r.Type.Equals(TagType.Secondary));
+		}
+
 		public Tag GetTagById(Guid Id, bool tracked = false)
 		{
 			var tag = _context.Tags.Include(t => t.Payments).Where(t => t.TagId.Equals(Id));

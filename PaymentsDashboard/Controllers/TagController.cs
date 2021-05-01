@@ -24,6 +24,18 @@ namespace PaymentsDashboard.Controllers
 			return Ok(tagService.GetAllTags().RemoveCycle());
 		}
 
+		[HttpGet("[action]")]
+		public ActionResult<IEnumerable<Tag>> GetPrimaryTags()
+		{
+			return Ok(tagService.GetPrimaryTags().RemoveCycle());
+		}
+
+		[HttpGet("[action]")]
+		public ActionResult<IEnumerable<Tag>> GetSecondaryTags()
+		{
+			return Ok(tagService.GetSecondaryTags().RemoveCycle());
+		}
+
 		[HttpGet("{id}")]
 		public ActionResult<Tag> GetTag(Guid id)
 		{
