@@ -7,7 +7,11 @@ export enum TagType {
   Secondary = 1
 }
 
-export class Payment {
+export class CreatedBase {
+  created: Date;
+}
+
+export class Payment extends CreatedBase {
   paymentId: string;
   title: string;
   amount: number;
@@ -15,7 +19,7 @@ export class Payment {
   tags: Tag[];
 }
 
-export class Tag {
+export class Tag extends CreatedBase {
   tagId: string;
   title: string;
   hexColorCode: string;
