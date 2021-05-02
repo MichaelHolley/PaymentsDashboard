@@ -19,7 +19,8 @@ export class TagsComponent implements OnInit {
   tagTypes = [];
   TagType = TagType;
 
-  existingTags: Tag[];
+  displayTagType = 0;
+  displayedTags: Tag[];
 
   resetFromJSON = {
     tagId: undefined,
@@ -51,8 +52,7 @@ export class TagsComponent implements OnInit {
 
   getTags() {
     this.tagService.getAllTags().subscribe(result => {
-      this.existingTags = result;
-      console.log(this.existingTags)
+      this.displayedTags = result.filter(t => t.type === this.displayTagType);
     });
   }
 
@@ -79,7 +79,6 @@ export class TagsComponent implements OnInit {
     }
 
     let postTag = this.tagForm.value as Tag;
-    console.log(postTag);
 
     this.tagService.createOrUpdateTag(postTag).subscribe(result => {
       this.resetForm();
@@ -92,4 +91,7 @@ export class TagsComponent implements OnInit {
     this.tagService.deleteTag(tag.tagId).subscribe(result => this.getTags());
   }
 
+  displayTagTypeChange(value) {
+    this.getTags();
+  }
 }
