@@ -47,7 +47,7 @@ namespace PaymentsDashboard.Data
 							Title = p.Title,
 							Amount = p.Amount,
 							Date = p.Date,
-							Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null }).ToList(),
+							Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, Type = pt.Type, Created = pt.Created }).ToList(),
 							Created = p.Created
 						}).ToList(),
 					Created = t.Created
@@ -66,7 +66,7 @@ namespace PaymentsDashboard.Data
 						Title = p.Title,
 						Amount = p.Amount,
 						Date = p.Date,
-						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null }).ToList(),
+						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, Type = pt.Type, Created = pt.Created }).ToList(),
 						Created = p.Created
 					}
 				).ToList();

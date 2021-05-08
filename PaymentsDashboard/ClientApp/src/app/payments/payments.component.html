@@ -16,14 +16,20 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 form-group">
+        <div class="col-md-4 form-group">
           <label for="dateInput">Date</label>
           <input type="date" id="dateInput" class="form-control" formControlName="date" />
         </div>
-        <div class="col-md-6 form-group">
-          <label for="tagsSelection">Tags</label>
-          <select class="form-control" id="tagsSelection" formControlName="tags" multiple>
-            <option *ngFor="let tag of availableTags" [value]="tag" [style.background-color]="tag.hexColorCode" class="text-beige">{{ tag.title }}</option>
+        <div class="col-md-4 form-group">
+          <label for="primaryTagSelection">Primary Tag</label>
+          <select class="form-control" id="primaryTagSelection" formControlName="primaryTag">
+            <option *ngFor="let tag of primaryTags" [ngValue]="tag" [style.background-color]="tag.hexColorCode" class="text-beige">{{ tag.title }}</option>
+          </select>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="secondaryTagsSelection">Secondary Tags</label>
+          <select class="form-control" id="secondaryTagsSelection" formControlName="secondaryTags" multiple>
+            <option *ngFor="let tag of secondaryTags" [ngValue]="tag" [style.background-color]="tag.hexColorCode" class="text-beige">{{ tag.title }}</option>
           </select>
         </div>
       </div>      
