@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
-import { Payment, PaymentsPerDateModel, Tag } from '../../assets/shared/models/models';
+import { Payment, PaymentsPerDateModel, Tag, TagType } from '../../assets/shared/models/models';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
 
@@ -15,8 +15,10 @@ export class PaymentsComponent implements OnInit {
   faEdit = faEdit;
   faUndoAlt = faUndoAlt;
 
-  availableTags: Tag[];
+  primaryTags: Tag[];
+  secondaryTags: Tag[];
   usedTags: Tag[] = [];
+  TagType = TagType;
 
   numberOfDisplayedMonths: number;
   displayedPayments: PaymentsPerDateModel[];
@@ -29,7 +31,8 @@ export class PaymentsComponent implements OnInit {
     title: '',
     amount: 0,
     date: this.dateToString(new Date),
-    tags: []
+    primaryTag: undefined,
+    secondaryTags: []
   }
 
   constructor(private tagsService: TagService,
@@ -43,7 +46,8 @@ export class PaymentsComponent implements OnInit {
       title: [""],
       amount: [0, [Validators.required, Validators.min(0.01)]],
       date: ["", Validators.required],
-      tags: [[]]
+      primaryTag: [undefined],
+      secondaryTags: [[]]
     });
 
     this.getTags();
@@ -97,7 +101,12 @@ export class PaymentsComponent implements OnInit {
   }
 
   getTags() {
-    this.tagsService.getAllTags().subscribe(result => { this.availableTags = result; });
+    this.tagsService.getAllTags().subscribe(result => {
+      this.primaryTags = result.filter(t => t.type === TagType.Primary);
+      this.secondaryTags = result.filter(t => t.type === TagType.Secondary);
+      this.primaryTags.forEach(t => t.payments = null);
+      this.secondaryTags.forEach(t => t.payments = null);
+    });
   }
 
   getIndexOfDate(payment: Payment) {
@@ -131,6 +140,9 @@ export class PaymentsComponent implements OnInit {
     }
 
     let postPayment = this.paymentForm.value as Payment;
+    postPayment.tags = [];
+    postPayment.tags.push(this.paymentForm.value.primaryTag);
+    postPayment.tags = postPayment.tags.concat(this.paymentForm.value.secondaryTags);
 
     this.paymentService.createOrUpdatePayment(postPayment).subscribe(result => {
       this.resetForm();
@@ -142,9 +154,16 @@ export class PaymentsComponent implements OnInit {
   editPayment(payment: Payment) {
     this.showForm = true;
 
-    window.scroll(0, 0);
+    this.paymentForm.patchValue({
+      paymentId: payment.paymentId,
+      title: payment.title,
+      amount: payment.amount,
+      date: payment.date,
+      primaryTag: this.primaryTags.find(pT => pT.tagId === payment.tags.find(t => t.type === TagType.Primary).tagId),
+      secondaryTags: this.secondaryTags.filter(sT => payment.tags.some(t => t.tagId === sT.tagId))
+    });
 
-    this.paymentForm.patchValue(payment);
+    window.scroll(0, 0);
   }
 
   addButtonAction() {
@@ -161,5 +180,9 @@ export class PaymentsComponent implements OnInit {
     this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
       this.getPayments(this.numberOfDisplayedMonths, true);
     });
+  }
+
+  sortTags(tags: Tag[]) {
+    return tags.sort((a, b) => a.type - b.type);
   }
 }

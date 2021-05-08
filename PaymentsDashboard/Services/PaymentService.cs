@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PaymentsDashboard.Data;
+using PaymentsDashboard.Data.Modells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PaymentsDashboard.Data.Services
+namespace PaymentsDashboard.Services
 {
 	public class PaymentService : IPaymentService
 	{
@@ -56,6 +58,7 @@ namespace PaymentsDashboard.Data.Services
 		public Payment CreatePayment(Payment payment)
 		{
 			payment.Tags = GetTrackedTagsList(payment.Tags);
+			payment.Created = DateTime.Now;
 
 			_context.Payments.Add(payment);
 			_context.SaveChanges();

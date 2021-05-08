@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
-using PaymentsDashboard.Data.Services;
+using PaymentsDashboard.Data.Modells;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentsDashboard.Services
 {
@@ -19,6 +17,8 @@ namespace PaymentsDashboard.Services
 		public Tag CreateTag(Tag tag)
 		{
 			tag.Payments = null;
+			tag.Created = DateTime.Now;
+
 			_context.Tags.Add(tag);
 			_context.SaveChanges();
 
@@ -43,6 +43,16 @@ namespace PaymentsDashboard.Services
 		public IQueryable<Tag> GetAllTags()
 		{
 			return _context.Tags.Include(r => r.Payments);
+		}
+
+		public IQueryable<Tag> GetPrimaryTags()
+		{
+			return _context.Tags.Include(r => r.Payments).Where(r => r.Type.Equals(TagType.Primary));
+		}
+
+		public IQueryable<Tag> GetSecondaryTags()
+		{
+			return _context.Tags.Include(r => r.Payments).Where(r => r.Type.Equals(TagType.Secondary));
 		}
 
 		public Tag GetTagById(Guid Id, bool tracked = false)

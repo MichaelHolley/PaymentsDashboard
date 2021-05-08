@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
-using PaymentsDashboard.Data.Services;
+using PaymentsDashboard.Data.Modells;
+using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PaymentsDashboard.Controllers
 {
@@ -22,6 +22,18 @@ namespace PaymentsDashboard.Controllers
 		public ActionResult<IEnumerable<Tag>> GetTags()
 		{
 			return Ok(tagService.GetAllTags().RemoveCycle());
+		}
+
+		[HttpGet("[action]")]
+		public ActionResult<IEnumerable<Tag>> GetPrimaryTags()
+		{
+			return Ok(tagService.GetPrimaryTags().RemoveCycle());
+		}
+
+		[HttpGet("[action]")]
+		public ActionResult<IEnumerable<Tag>> GetSecondaryTags()
+		{
+			return Ok(tagService.GetSecondaryTags().RemoveCycle());
 		}
 
 		[HttpGet("{id}")]
