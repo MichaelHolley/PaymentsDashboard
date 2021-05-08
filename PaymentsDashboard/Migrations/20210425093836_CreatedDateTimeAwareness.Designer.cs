@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PaymentsDashboard.Data;
 
 namespace PaymentsDashboard.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210425093836_CreatedDateTimeAwareness")]
+    partial class CreatedDateTimeAwareness
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +33,7 @@ namespace PaymentsDashboard.Migrations
                     b.ToTable("PaymentTag");
                 });
 
-            modelBuilder.Entity("PaymentsDashboard.Data.Modells.Payment", b =>
+            modelBuilder.Entity("PaymentsDashboard.Data.Payment", b =>
                 {
                     b.Property<Guid>("PaymentId")
                         .ValueGeneratedOnAdd()
@@ -44,7 +46,6 @@ namespace PaymentsDashboard.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Date")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -55,7 +56,7 @@ namespace PaymentsDashboard.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("PaymentsDashboard.Data.Modells.Tag", b =>
+            modelBuilder.Entity("PaymentsDashboard.Data.Tag", b =>
                 {
                     b.Property<Guid>("TagId")
                         .ValueGeneratedOnAdd()
@@ -65,15 +66,10 @@ namespace PaymentsDashboard.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("HexColorCode")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("TagId");
 
@@ -82,13 +78,13 @@ namespace PaymentsDashboard.Migrations
 
             modelBuilder.Entity("PaymentTag", b =>
                 {
-                    b.HasOne("PaymentsDashboard.Data.Modells.Payment", null)
+                    b.HasOne("PaymentsDashboard.Data.Payment", null)
                         .WithMany()
                         .HasForeignKey("PaymentsPaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PaymentsDashboard.Data.Modells.Tag", null)
+                    b.HasOne("PaymentsDashboard.Data.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsTagId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
-import { Tag } from '../../assets/shared/models/models';
+import { Tag, TagType } from '../../assets/shared/models/models';
 import { TagService } from '../../assets/shared/services/tag.service';
 
 @Component({
@@ -16,13 +16,17 @@ export class TagsComponent implements OnInit {
 
   showForm = false;
   tagForm: FormGroup;
+  tagTypes = [];
+  TagType = TagType;
 
-  existingTags: Tag[];
+  displayTagType = 0;
+  displayedTags: Tag[];
 
   resetFromJSON = {
     tagId: undefined,
     title: "",
-    hexColorCode: "#ffffff"
+    hexColorCode: "#ffffff",
+    type: 0
   }
 
   constructor(private tagService: TagService,
@@ -30,10 +34,17 @@ export class TagsComponent implements OnInit {
   }
 
   ngOnInit() {
+    for (let enumMember in TagType) {
+      if (!isNaN(parseInt(enumMember, 10))) {
+        this.tagTypes.push({ key: parseInt(enumMember), value: TagType[enumMember] });
+      } 
+    }
+
     this.tagForm = this.formBuilder.group({
       tagId: [undefined],
       title: ["", Validators.required],
-      hexColorCode: ["#ffffff"]
+      hexColorCode: ["#ffffff"],
+      type: [0, Validators.required]
     });
 
     this.getTags();
@@ -41,7 +52,7 @@ export class TagsComponent implements OnInit {
 
   getTags() {
     this.tagService.getAllTags().subscribe(result => {
-      this.existingTags = result;
+      this.displayedTags = result.filter(t => t.type === this.displayTagType);
     });
   }
 
@@ -80,4 +91,7 @@ export class TagsComponent implements OnInit {
     this.tagService.deleteTag(tag.tagId).subscribe(result => this.getTags());
   }
 
+  displayTagTypeChange(value) {
+    this.getTags();
+  }
 }

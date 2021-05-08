@@ -14,14 +14,6 @@ html {
   scroll-behavior: smooth;
 }
 
-a {
-  color: #0366d6;
-}
-
-code {
-  color: #e01a76;
-}
-
 .btn:focus {
   outline: none;
   box-shadow: none;

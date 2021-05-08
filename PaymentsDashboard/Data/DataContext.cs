@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PaymentsDashboard.Data.Modells;
 
 namespace PaymentsDashboard.Data
 {

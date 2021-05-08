@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using PaymentsDashboard.Data.Modells;
 
-namespace PaymentsDashboard.Data.Services
+namespace PaymentsDashboard.Services
 {
 	public interface IPaymentService
 	{

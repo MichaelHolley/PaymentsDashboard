@@ -16,6 +16,14 @@ export class TagService {
     return this.httpClient.get<Tag[]>(this.URL);
   }
 
+  getPrimaryTags(): Observable<Tag[]> {
+    return this.httpClient.get<Tag[]>(this.URL + '/GetPrimaryTags');
+  }
+
+  getSecondaryTags(): Observable<Tag[]> {
+    return this.httpClient.get<Tag[]>(this.URL + '/GetSecondaryTags');
+  }
+
   createOrUpdateTag(tag: Tag): Observable<any> {
     return this.httpClient.post<Tag>(this.URL, tag);
   }
