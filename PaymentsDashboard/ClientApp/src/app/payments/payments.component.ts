@@ -181,4 +181,8 @@ export class PaymentsComponent implements OnInit {
       this.getPayments(this.numberOfDisplayedMonths, true);
     });
   }
+
+  sortTags(tags: Tag[]) {
+    return tags.sort((a, b) => a.type - b.type);
+  }
 }
