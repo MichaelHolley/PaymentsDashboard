@@ -48,7 +48,7 @@ export class StatisticsComponent implements OnInit {
         }
       };
 
-      this.tagService.getAllTags().subscribe(result => {
+      this.tagService.getPrimaryTags().subscribe(result => {
         result.forEach(tag => {
           let values = [];
           tag.payments.forEach(p => values.push([new Date(p.date).getTime(), p.amount]));
