@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PaymentsDashboard.Data;
+using PaymentsDashboard.Data.Modells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PaymentsDashboard.Data.Services
+namespace PaymentsDashboard.Services
 {
 	public class PaymentService : IPaymentService
 	{

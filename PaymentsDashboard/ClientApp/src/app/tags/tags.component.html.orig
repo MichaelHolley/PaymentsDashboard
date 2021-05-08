@@ -30,8 +30,13 @@
 </div>
 
 <div class="my-1">
+<<<<<<< HEAD
   <div class="row justify-content-end px-3">
     <select class="col-md-3 form-control my-1" [(ngModel)]="displayTagType" (change)="displayTagTypeChange($event.target.value)">
+=======
+  <div class="row justify-content-end">
+    <select class="col-md-3 form-control p-0 my-1" [(ngModel)]="displayTagType" (change)="displayTagTypeChange($event.target.value)">
+>>>>>>> 2507785714de10fc8b6ab44e250ae74233ac42ce
       <option *ngFor="let type of tagTypes" [ngValue]="type.key">{{ type.value }}</option>
     </select>
   </div>  
