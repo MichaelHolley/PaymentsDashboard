@@ -3,6 +3,7 @@ import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions } from "ng-apexcharts";
 import { Payment, Tag } from '../../assets/shared/models/models';
+import { StatisticsService } from '../../assets/shared/services/statistics.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -24,7 +25,8 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     private paymentsService: PaymentService,
-    private tagService: TagService) { }
+    private tagService: TagService,
+    private statisticsService: StatisticsService) { }
 
   ngOnInit() {
     // Scatter-Chart
@@ -35,6 +37,9 @@ export class StatisticsComponent implements OnInit {
           type: 'scatter',
           zoom: {
             type: 'xy'
+          },
+          toolbar: {
+            show: false
           }
         },
         series: [],
@@ -66,54 +71,67 @@ export class StatisticsComponent implements OnInit {
     // Stacked Bar-Chart
     {
       this.dailySumChartOptions = {
+        series: [],
         title: { text: 'Sum of Payments by Date' },
         chart: {
-          type: 'bar'
+          type: 'bar',
+          stacked: true,
+          toolbar: {
+            show: false
+          }
         },
-        series: [],
         yaxis: {
           labels: {
             formatter: this.valueFormatter
           }
         },
+        
+        plotOptions: {
+          bar: {
+            horizontal: false
+          }
+        },
         dataLabels: {
-          enabled: false,
           formatter: this.valueFormatter
         }
       };
 
-      this.paymentsService.getAllPayments().subscribe(payments => {
-        let paymentsByDate: {
-          date: Date,
-          sum: number
-        }[] = [];
-
-        let startDate = new Date(payments[0].date);
-        let lastDate = new Date(payments[payments.length - 1].date);
-
-        while (startDate <= lastDate) {
-          let tempSum = this.getSum(payments.filter(p => new Date(p.date).getTime() === startDate.getTime()));
-          paymentsByDate.push({ date: new Date(startDate), sum: tempSum });
-          startDate.setDate(startDate.getDate() + 1);
-        }
-
-        let dates = [];
+      this.statisticsService.getStackedBarChartByMonths().subscribe(result => {
         let values = [];
-        paymentsByDate.forEach(pbd => {
-          dates.push(pbd.date);
-          values.push(pbd.sum);
+        let tags: Tag[] = [];
+        let months = [];
+        result.forEach(mv => {
+          months.push(new Date(mv.month).toUTCString());
+          mv.tagSums.forEach((ts, index) => {
+            if (!values[index]) {
+              values.push([]);
+              tags.push(ts.tag);
+            }
+
+            values[index].push(ts.sum);
+          });
         });
 
-        this.dailySumChartOptions.series.push({
-          name: 'Payments',
-          color: '#FF6B35',
-          data: values
-        });
+        for (let i = 0; i < values.length; i++) {
+          this.dailySumChartOptions.series.push({
+            name: tags[i].title,
+            color: tags[i].hexColorCode,
+            data: values[i],
+          });
+        }
 
         this.dailySumChartOptions.xaxis = {
           type: 'datetime',
-          categories: dates
-        };
+          categories: months,
+          labels: {
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: 'MMM \'yy',
+              day: 'dd MMM',
+              hour: 'HH:mm'
+            }
+          }
+        }
       });
     }
   }

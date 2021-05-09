@@ -15,6 +15,7 @@ import { PaymentsComponent } from './payments/payments.component';
 import { TagsComponent } from './tags/tags.component';
 import { NavComponent } from './nav/nav.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { StatisticsService } from '../assets/shared/services/statistics.service';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
   providers: [
     PaymentService,
     TagService,
+    StatisticsService
   ],
   bootstrap: [AppComponent]
 })
