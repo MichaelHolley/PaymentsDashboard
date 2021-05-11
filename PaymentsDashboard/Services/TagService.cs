@@ -40,9 +40,16 @@ namespace PaymentsDashboard.Services
 			return tag;
 		}
 
-		public IQueryable<Tag> GetAllTags()
+		public IQueryable<Tag> GetAllTags(bool includePayments = true)
 		{
-			return _context.Tags.Include(r => r.Payments);
+			if (includePayments)
+			{
+				return _context.Tags.Include(r => r.Payments);
+			}
+			else
+			{
+				return _context.Tags;
+			}
 		}
 
 		public IQueryable<Tag> GetPrimaryTags()
