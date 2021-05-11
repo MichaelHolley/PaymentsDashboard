@@ -21,7 +21,7 @@ export type ChartOptions = {
 })
 export class StatisticsComponent implements OnInit {
   public scatterChartOptions: Partial<ChartOptions>;
-  public dailySumChartOptions: Partial<ChartOptions>;
+  public monthlyBarChartOptions: Partial<ChartOptions>;
 
   constructor(
     private paymentsService: PaymentService,
@@ -70,7 +70,7 @@ export class StatisticsComponent implements OnInit {
 
     // Stacked Bar-Chart
     {
-      this.dailySumChartOptions = {
+      this.monthlyBarChartOptions = {
         series: [],
         title: { text: 'Sum of Payments by Date' },
         chart: {
@@ -101,7 +101,8 @@ export class StatisticsComponent implements OnInit {
         let tags: Tag[] = [];
         let months = [];
         result.forEach(mv => {
-          months.push(new Date(mv.month).toUTCString());
+          let date = new Date(mv.month);
+          months.push(date.toLocaleString('en-EN', { month: 'short', year: '2-digit' }));
           mv.tagSums.forEach((ts, index) => {
             if (!values[index]) {
               values.push([]);
@@ -113,24 +114,15 @@ export class StatisticsComponent implements OnInit {
         });
 
         for (let i = 0; i < values.length; i++) {
-          this.dailySumChartOptions.series.push({
+          this.monthlyBarChartOptions.series.push({
             name: tags[i].title,
             color: tags[i].hexColorCode,
             data: values[i],
           });
         }
 
-        this.dailySumChartOptions.xaxis = {
-          type: 'datetime',
-          categories: months,
-          labels: {
-            datetimeFormatter: {
-              year: 'yyyy',
-              month: 'MMM \'yy',
-              day: 'dd MMM',
-              hour: 'HH:mm'
-            }
-          }
+        this.monthlyBarChartOptions.xaxis = {
+          categories: months
         }
       });
     }

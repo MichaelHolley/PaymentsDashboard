@@ -1,6 +1,7 @@
 <div class="my-2 row">
-  <div class="col-md-6 col-12">
-    <apx-chart *ngIf="scatterChartOptions" [series]="scatterChartOptions.series"
+  <div class="col-lg-6 col-12">
+    <apx-chart *ngIf="scatterChartOptions"
+               [series]="scatterChartOptions.series"
                [title]="scatterChartOptions.title"
                [chart]="scatterChartOptions.chart"
                [xaxis]="scatterChartOptions.xaxis"
@@ -8,13 +9,14 @@
                [dataLabels]="scatterChartOptions.dataLabels"
                [plotOptions]="scatterChartOptions.plotOptions"></apx-chart>
   </div>
-  <div class="col-md-6 col-12">
-    <apx-chart *ngIf="dailySumChartOptions" [series]="dailySumChartOptions.series"
-               [title]="dailySumChartOptions.title"
-               [chart]="dailySumChartOptions.chart"
-               [xaxis]="dailySumChartOptions.xaxis"
-               [yaxis]="dailySumChartOptions.yaxis"
-               [dataLabels]="dailySumChartOptions.dataLabels"
-               [plotOptions]="dailySumChartOptions.plotOptions"></apx-chart>
+  <div class="col-lg-6 col-12">
+    <apx-chart *ngIf="monthlyBarChartOptions"
+               [series]="monthlyBarChartOptions.series"
+               [title]="monthlyBarChartOptions.title"
+               [chart]="monthlyBarChartOptions.chart"
+               [xaxis]="monthlyBarChartOptions.xaxis"
+               [yaxis]="monthlyBarChartOptions.yaxis"
+               [dataLabels]="monthlyBarChartOptions.dataLabels"
+               [plotOptions]="monthlyBarChartOptions.plotOptions"></apx-chart>
   </div>
 </div>
