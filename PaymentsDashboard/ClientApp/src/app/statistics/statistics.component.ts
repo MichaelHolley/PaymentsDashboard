@@ -85,7 +85,9 @@ export class StatisticsComponent implements OnInit {
             formatter: this.valueFormatter
           }
         },
-        
+        xaxis: {
+          categories: []
+        },
         plotOptions: {
           bar: {
             horizontal: false
@@ -99,10 +101,8 @@ export class StatisticsComponent implements OnInit {
       this.statisticsService.getStackedBarChartByMonths().subscribe(result => {
         let values = [];
         let tags: Tag[] = [];
-        let months = [];
         result.forEach(mv => {
-          let date = new Date(mv.month);
-          months.push(date.toLocaleString('en-EN', { month: 'short', year: '2-digit' }));
+          this.monthlyBarChartOptions.xaxis.categories.push(new Date(mv.month).toLocaleString('en-EN', { month: 'short', year: '2-digit' }));
           mv.tagSums.forEach((ts, index) => {
             if (!values[index]) {
               values.push([]);
@@ -119,10 +119,6 @@ export class StatisticsComponent implements OnInit {
             color: tags[i].hexColorCode,
             data: values[i],
           });
-        }
-
-        this.monthlyBarChartOptions.xaxis = {
-          categories: months
         }
       });
     }
