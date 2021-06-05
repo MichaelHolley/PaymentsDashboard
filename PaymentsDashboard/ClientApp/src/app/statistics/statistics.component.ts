@@ -135,6 +135,6 @@ export class StatisticsComponent implements OnInit {
   }
 
   valueFormatter(val) {
-    return val.toFixed(2);
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(val);
   }
 }
