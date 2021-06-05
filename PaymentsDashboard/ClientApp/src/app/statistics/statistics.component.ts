@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
-import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions } from "ng-apexcharts";
+import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions, ApexFill } from "ng-apexcharts";
 import { Payment, Tag } from '../../assets/shared/models/models';
 import { StatisticsService } from '../../assets/shared/services/statistics.service';
 
@@ -13,6 +13,8 @@ export type ChartOptions = {
   title: ApexTitleSubtitle;
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
+  labels: any;
+  colors: any[];
 };
 
 @Component({
@@ -22,6 +24,7 @@ export type ChartOptions = {
 export class StatisticsComponent implements OnInit {
   public scatterChartOptions: Partial<ChartOptions>;
   public monthlyBarChartOptions: Partial<ChartOptions>;
+  public monthlyAveragePieChartOptions: Partial<ChartOptions>;
 
   constructor(
     private paymentsService: PaymentService,
@@ -120,6 +123,44 @@ export class StatisticsComponent implements OnInit {
             data: values[i],
           });
         }
+      });
+    }
+
+    // Monthly Average Pie-Chart
+    {
+      this.monthlyAveragePieChartOptions = {
+        series: [],
+        chart: {
+          height: 350,
+          type: 'donut'
+        },
+        title: { text: 'Monthly average by Tag' },
+        labels: [],
+        colors: [],
+        plotOptions: {
+          pie: {
+            donut: {
+              labels: {
+                show: true,
+                name: {
+                  show: true                  
+                },
+                value: {
+                  show: true,
+                  formatter: this.valueFormatter
+                }
+              }
+            }
+          }
+        }
+      };
+
+      this.statisticsService.getMonthlyAverageByTag().subscribe(result => {
+        result.forEach(val => {
+          this.monthlyAveragePieChartOptions.series.push(val.sum);
+          this.monthlyAveragePieChartOptions.labels.push(val.tag.title);
+          this.monthlyAveragePieChartOptions.colors.push(val.tag.hexColorCode);
+        });
       });
     }
   }
