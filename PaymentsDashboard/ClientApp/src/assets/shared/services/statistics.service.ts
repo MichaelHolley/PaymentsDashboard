@@ -15,4 +15,8 @@ export class StatisticsService {
   getStackedBarChartByMonths(): Observable<any> {
     return this.httpClient.get<any[]>(this.URL + '/GetStackedBarChartByMonths');
   }
+
+  getMonthlyAverageByTag(): Observable<any[]> {
+    return this.httpClient.get<any[]>(this.URL + '/GetMonthlyAverageByTag');
+  }
 }
