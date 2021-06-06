@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-nav',
@@ -8,6 +8,7 @@ import { faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
 export class NavComponent implements OnInit {
   faTag = faTag;
   faMoneyBillWave = faMoneyBillWave;
+  faChartLine = faChartLine;
 
   expandedOnMobile: boolean = false;
 

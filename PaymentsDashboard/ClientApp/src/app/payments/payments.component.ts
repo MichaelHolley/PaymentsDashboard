@@ -159,7 +159,7 @@ export class PaymentsComponent implements OnInit {
       title: payment.title,
       amount: payment.amount,
       date: payment.date,
-      primaryTag: this.primaryTags.find(pT => pT.tagId === payment.tags.find(t => t.type === TagType.Primary).tagId),
+      primaryTag: payment.tags.find(t => t.type === TagType.Primary) ? this.primaryTags.find(pT => pT.tagId === payment.tags.find(t => t.type === TagType.Primary).tagId) : undefined,
       secondaryTags: this.secondaryTags.filter(sT => payment.tags.some(t => t.tagId === sT.tagId))
     });
 

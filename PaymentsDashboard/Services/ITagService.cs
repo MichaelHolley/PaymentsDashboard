@@ -6,7 +6,7 @@ namespace PaymentsDashboard.Services
 {
 	public interface ITagService
 	{
-		public IQueryable<Tag> GetAllTags();
+		public IQueryable<Tag> GetAllTags(bool includePayments = true);
 		public IQueryable<Tag> GetPrimaryTags();
 		public IQueryable<Tag> GetSecondaryTags();
 		public Tag GetTagById(Guid Id, bool tracked = false);
