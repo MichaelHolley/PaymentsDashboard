@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
-import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions, ApexFill } from "ng-apexcharts";
+import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions, ApexFill, ApexTooltip } from "ng-apexcharts";
 import { Payment, Tag } from '../../assets/shared/models/models';
 import { StatisticsService } from '../../assets/shared/services/statistics.service';
 
@@ -13,6 +13,7 @@ export type ChartOptions = {
   title: ApexTitleSubtitle;
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
+  tooltip: ApexTooltip;
   labels: any;
   colors: any[];
 };
@@ -32,10 +33,18 @@ export class StatisticsComponent implements OnInit {
     private statisticsService: StatisticsService) { }
 
   ngOnInit() {
+    let titleFontStyle = {
+      fontFamily: 'Lato',
+      fontSize: '16px'
+    };
+
     // Scatter-Chart
     {
       this.scatterChartOptions = {
-        title: { text: 'Payments by Tag' },
+        title: {
+          text: 'Scattered Payments',
+          style: titleFontStyle
+        },
         chart: {
           type: 'scatter',
           zoom: {
@@ -75,7 +84,10 @@ export class StatisticsComponent implements OnInit {
     {
       this.monthlyBarChartOptions = {
         series: [],
-        title: { text: 'Sum of Payments by Date' },
+        title: {
+          text: 'Sum of Payments by Month',
+          style: titleFontStyle
+        },
         chart: {
           type: 'bar',
           stacked: true,
@@ -97,7 +109,7 @@ export class StatisticsComponent implements OnInit {
           }
         },
         dataLabels: {
-          formatter: this.valueFormatter
+          enabled: false
         }
       };
 
@@ -105,7 +117,7 @@ export class StatisticsComponent implements OnInit {
         let values = [];
         let tags: Tag[] = [];
         result.forEach(mv => {
-          this.monthlyBarChartOptions.xaxis.categories.push(new Date(mv.month).toLocaleString('en-EN', { month: 'short', year: '2-digit' }));
+          this.monthlyBarChartOptions.xaxis.categories.push(new Date(mv.month).toLocaleString('en-EN', { month: 'short', year: 'numeric' }));
           mv.tagSums.forEach((ts, index) => {
             if (!values[index]) {
               values.push([]);
@@ -134,7 +146,10 @@ export class StatisticsComponent implements OnInit {
           height: 350,
           type: 'donut'
         },
-        title: { text: 'Monthly average by Tag' },
+        title: {
+          text: 'Monthly Average',
+          style: titleFontStyle
+        },
         labels: [],
         colors: [],
         plotOptions: {
@@ -143,14 +158,27 @@ export class StatisticsComponent implements OnInit {
               labels: {
                 show: true,
                 name: {
-                  show: true                  
+                  show: true
                 },
                 value: {
                   show: true,
                   formatter: this.valueFormatter
+                },
+                total: {
+                  show: true,
+                  color: '#000000',
+                  formatter: function (w) {
+                    let sum = w.globals.seriesTotals.reduce((a, b) => { return a + b }, 0);
+                    return Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(sum);
+                  }
                 }
               }
             }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: this.valueFormatter
           }
         }
       };
