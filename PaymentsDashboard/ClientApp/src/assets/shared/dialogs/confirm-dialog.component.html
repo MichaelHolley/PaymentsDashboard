@@ -1,14 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">{{title}}</h4>
-  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+  <button type="button" class="close pull-right" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
-  <ul *ngIf="list.length">
-    <li *ngFor="let item of list">{{item}}</li>
-  </ul>
+  {{ content }}
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+  <button type="button" class="btn btn-primary" (click)="confirm()">Confirm</button>
+  <button type="button" class="btn btn-outline-primary" (click)="cancel()">Close</button>
 </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'confirm-dialog',
@@ -7,12 +8,23 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 })
 export class ConfirmDialogComponent implements OnInit {
   title: string;
-  closeBtnName: string;
-  list: any[] = [];
+  content: string;
+
+  public onClose: Subject<boolean>;
 
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit() {
-    this.list.push('PROFIT!!!');
+    this.onClose = new Subject();
+  }
+
+  confirm() {
+    this.onClose.next(true);
+    this.bsModalRef.hide();
+  }
+
+  cancel() {
+    this.onClose.next(false);
+    this.bsModalRef.hide();
   }
 }

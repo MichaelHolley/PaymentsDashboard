@@ -182,8 +182,13 @@ export class PaymentsComponent implements OnInit {
   }
 
   deletePayment(payment: Payment) {
-    this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
-      this.getPayments(this.numberOfDisplayedMonths, true);
+    let modalRef = this.openDeleteConfirmDialog();
+    modalRef.content.onClose.subscribe(confirmed => {
+      if (confirmed) {
+        this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
+          this.getPayments(this.numberOfDisplayedMonths, true);
+        });
+      }
     });
   }
 
@@ -191,17 +196,11 @@ export class PaymentsComponent implements OnInit {
     return tags.sort((a, b) => a.type - b.type);
   }
 
-  openModalWithComponent() {
+  openDeleteConfirmDialog() {
     const initialState = {
-      list: [
-        'Open a modal with component',
-        'Pass your data',
-        'Do something else',
-        '...'
-      ],
-      title: 'Modal with component'
+      title: 'Delete Payment',
+      content: 'Do you want to delete this payment?'
     };
-    this.bsModalRef = this.modalService.show(ConfirmDialogComponent, { initialState });
-    this.bsModalRef.content.closeBtnName = 'Close';
+    return this.modalService.show(ConfirmDialogComponent, { initialState });
   }
 }
