@@ -17,6 +17,7 @@ import { NavComponent } from './nav/nav.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { StatisticsService } from '../assets/shared/services/statistics.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ConfirmDialogComponent } from '../assets/shared/dialogs/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     PaymentsComponent,
     TagsComponent,
     NavComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -35,6 +37,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     FontAwesomeModule,
     NgApexchartsModule,
     ModalModule.forRoot()
+  ],
+  entryComponents: [
+    ConfirmDialogComponent
   ],
   providers: [
     PaymentService,
