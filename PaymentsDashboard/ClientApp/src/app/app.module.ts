@@ -16,6 +16,7 @@ import { TagsComponent } from './tags/tags.component';
 import { NavComponent } from './nav/nav.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { StatisticsService } from '../assets/shared/services/statistics.service';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { StatisticsService } from '../assets/shared/services/statistics.service'
     ReactiveFormsModule,
     AppRoutingModule,
     FontAwesomeModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    ModalModule.forRoot()
   ],
   providers: [
     PaymentService,
