@@ -18,6 +18,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { StatisticsService } from '../assets/shared/services/statistics.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../assets/shared/dialogs/confirm-dialog.component';
+import { InputValidationComponent } from '../assets/shared/inputcomponents/input-validation.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ConfirmDialogComponent } from '../assets/shared/dialogs/confirm-dialog.
     TagsComponent,
     NavComponent,
     StatisticsComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    InputValidationComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
