@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmDialogComponent } from '../../assets/shared/dialogs/confirm-dialog.component';
 import { Tag, TagType } from '../../assets/shared/models/models';
 import { TagService } from '../../assets/shared/services/tag.service';
 
@@ -30,8 +32,9 @@ export class TagsComponent implements OnInit {
   }
 
   constructor(private tagService: TagService,
-    private formBuilder: FormBuilder) {
-  }
+    private formBuilder: FormBuilder,
+    private modalService: BsModalService
+  ) { }
 
   ngOnInit() {
     for (let enumMember in TagType) {
@@ -43,7 +46,7 @@ export class TagsComponent implements OnInit {
     this.tagForm = this.formBuilder.group({
       tagId: [undefined],
       title: ["", Validators.required],
-      hexColorCode: ["#ffffff"],
+      hexColorCode: ["#ffffff", Validators.required],
       type: [0, Validators.required]
     });
 
@@ -88,10 +91,23 @@ export class TagsComponent implements OnInit {
   }
 
   deleteTag(tag: Tag) {
-    this.tagService.deleteTag(tag.tagId).subscribe(result => this.getTags());
+    let modalRef = this.openDeleteConfirmDialog();
+    modalRef.content.onClose.subscribe(confirmed => {
+      if (confirmed) {
+        this.tagService.deleteTag(tag.tagId).subscribe(result => this.getTags());
+      }
+    });
   }
 
   displayTagTypeChange(value) {
     this.getTags();
+  }
+
+  openDeleteConfirmDialog() {
+    const initialState = {
+      title: 'Delete Tag',
+      content: 'Do you want to delete this tag?'
+    };
+    return this.modalService.show(ConfirmDialogComponent, { initialState });
   }
 }

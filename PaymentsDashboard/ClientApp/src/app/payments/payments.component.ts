@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmDialogComponent } from '../../assets/shared/dialogs/confirm-dialog.component';
 import { Payment, PaymentsPerDateModel, Tag, TagType } from '../../assets/shared/models/models';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
@@ -14,6 +16,8 @@ export class PaymentsComponent implements OnInit {
   faTrash = faTrash;
   faEdit = faEdit;
   faUndoAlt = faUndoAlt;
+
+  bsModalRef: BsModalRef;
 
   primaryTags: Tag[];
   secondaryTags: Tag[];
@@ -37,7 +41,8 @@ export class PaymentsComponent implements OnInit {
 
   constructor(private tagsService: TagService,
     private paymentService: PaymentService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private modalService: BsModalService
   ) { }
 
   ngOnInit() {
@@ -46,7 +51,7 @@ export class PaymentsComponent implements OnInit {
       title: [""],
       amount: [0, [Validators.required, Validators.min(0.01)]],
       date: ["", Validators.required],
-      primaryTag: [undefined],
+      primaryTag: [undefined, Validators.required],
       secondaryTags: [[]]
     });
 
@@ -177,12 +182,25 @@ export class PaymentsComponent implements OnInit {
   }
 
   deletePayment(payment: Payment) {
-    this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
-      this.getPayments(this.numberOfDisplayedMonths, true);
+    let modalRef = this.openDeleteConfirmDialog();
+    modalRef.content.onClose.subscribe(confirmed => {
+      if (confirmed) {
+        this.paymentService.deletePayment(payment.paymentId).subscribe(result => {
+          this.getPayments(this.numberOfDisplayedMonths, true);
+        });
+      }
     });
   }
 
   sortTags(tags: Tag[]) {
     return tags.sort((a, b) => a.type - b.type);
+  }
+
+  openDeleteConfirmDialog() {
+    const initialState = {
+      title: 'Delete Payment',
+      content: 'Do you want to delete this payment?'
+    };
+    return this.modalService.show(ConfirmDialogComponent, { initialState });
   }
 }
