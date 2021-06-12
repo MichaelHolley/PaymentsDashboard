@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Subject } from 'rxjs';
 
@@ -7,6 +8,9 @@ import { Subject } from 'rxjs';
   templateUrl: './confirm-dialog.component.html',
 })
 export class ConfirmDialogComponent implements OnInit {
+  faTimes = faTimes;
+  faCheck = faCheck;
+
   title: string;
   content: string;
 
