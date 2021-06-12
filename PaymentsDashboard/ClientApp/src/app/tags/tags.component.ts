@@ -46,7 +46,7 @@ export class TagsComponent implements OnInit {
     this.tagForm = this.formBuilder.group({
       tagId: [undefined],
       title: ["", Validators.required],
-      hexColorCode: ["#ffffff"],
+      hexColorCode: ["#ffffff", Validators.required],
       type: [0, Validators.required]
     });
 
