@@ -1,4 +1,4 @@
-﻿namespace PaymentsDashboard.Data.Modells.Statistics
+﻿namespace PaymentsDashboard.Data.Modells.Charts
 {
 	public class TagSum
 	{
