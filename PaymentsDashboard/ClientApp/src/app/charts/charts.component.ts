@@ -3,7 +3,7 @@ import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions, ApexFill, ApexTooltip } from "ng-apexcharts";
 import { Payment, Tag } from '../../assets/shared/models/models';
-import { StatisticsService } from '../../assets/shared/services/statistics.service';
+import { ChartsService } from '../../assets/shared/services/charts.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -19,10 +19,10 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-statistics',
-  templateUrl: './statistics.component.html'
+  selector: 'app-charts',
+  templateUrl: './charts.component.html'
 })
-export class StatisticsComponent implements OnInit {
+export class ChartsComponent implements OnInit {
   public scatterChartOptions: Partial<ChartOptions>;
   public monthlyBarChartOptions: Partial<ChartOptions>;
   public monthlyAveragePieChartOptions: Partial<ChartOptions>;
@@ -30,7 +30,7 @@ export class StatisticsComponent implements OnInit {
   constructor(
     private paymentsService: PaymentService,
     private tagService: TagService,
-    private statisticsService: StatisticsService) { }
+    private chartsService: ChartsService) { }
 
   ngOnInit() {
     let titleFontStyle = {
@@ -113,7 +113,7 @@ export class StatisticsComponent implements OnInit {
         }
       };
 
-      this.statisticsService.getStackedBarChartByMonths().subscribe(result => {
+      this.chartsService.getStackedBarChartByMonths().subscribe(result => {
         let values = [];
         let tags: Tag[] = [];
         result.forEach(mv => {
@@ -183,7 +183,7 @@ export class StatisticsComponent implements OnInit {
         }
       };
 
-      this.statisticsService.getMonthlyAverageByTag().subscribe(result => {
+      this.chartsService.getMonthlyAverageByTag().subscribe(result => {
         result.forEach(val => {
           this.monthlyAveragePieChartOptions.series.push(val.sum);
           this.monthlyAveragePieChartOptions.labels.push(val.tag.title);

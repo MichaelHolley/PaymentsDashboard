@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PaymentsDashboard.Data.Modells.Statistics
+namespace PaymentsDashboard.Data.Modells.Charts
 {
 	public class StackedBarChartMonthlyModell
 	{
