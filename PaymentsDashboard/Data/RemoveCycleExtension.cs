@@ -86,5 +86,24 @@ namespace PaymentsDashboard.Data
 
 				return result;
 		}
+
+		public static ICollection<ReoccuringPayment> RemoveCycle(this IQueryable<ReoccuringPayment> payments)
+		{
+			var result = payments.Select(p =>
+					new ReoccuringPayment()
+					{
+						Id = p.Id,
+						Title = p.Title,
+						Amount = p.Amount,
+						StartDate = p.StartDate,
+						EndDate = p.EndDate,
+						ReoccuringType = p.ReoccuringType,
+						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, Type = pt.Type, Created = pt.Created }).ToList(),
+						Created = p.Created
+					}
+				).ToList();
+
+			return result;
+		}
 	}
 }
