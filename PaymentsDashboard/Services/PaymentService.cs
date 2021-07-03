@@ -90,5 +90,64 @@ namespace PaymentsDashboard.Services
 
 			return trackedTags;
 		}
+
+		public IQueryable<ReoccuringPayment> GetAllReoccuringPayments()
+		{
+			return _context.ReoccuringPayments.Include(r => r.Tags).OrderBy(p => p.Created);
+		}
+
+		public ReoccuringPayment GetReoccuringPaymentById(Guid Id, bool tracked = false)
+		{
+			var payment = _context.ReoccuringPayments.Include(p => p.Tags).Where(p => p.Id.Equals(Id));
+
+			if (!tracked)
+			{
+				payment = payment.AsNoTracking();
+			}
+
+			return payment.SingleOrDefault();
+		}
+
+		public ReoccuringPayment DeleteReoccuringPaymentById(Guid id)
+		{
+			var payment = GetReoccuringPaymentById(id, true);
+
+			if (payment == null)
+			{
+				return null;
+			}
+
+			_context.ReoccuringPayments.Remove(payment);
+			_context.SaveChanges();
+
+			return payment;
+		}
+
+		public ReoccuringPayment CreateReoccuringPayment(ReoccuringPayment payment)
+		{
+			payment.Tags = GetTrackedTagsList(payment.Tags);
+			payment.Created = DateTime.Now;
+
+			_context.ReoccuringPayments.Add(payment);
+			_context.SaveChanges();
+
+			return payment;
+		}
+
+		public ReoccuringPayment UpdateReoccuringPayment(ReoccuringPayment payment)
+		{
+			ReoccuringPayment paymentById = GetReoccuringPaymentById(payment.Id, true);
+
+			paymentById.Amount = payment.Amount;
+			paymentById.Title = payment.Title;
+			paymentById.StartDate = payment.StartDate;
+			paymentById.EndDate = payment.EndDate;
+			paymentById.ReoccuringType = payment.ReoccuringType;
+			paymentById.Tags = GetTrackedTagsList(payment.Tags);
+
+			_context.SaveChanges();
+
+			return paymentById;
+		}
 	}
 }

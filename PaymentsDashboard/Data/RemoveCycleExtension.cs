@@ -31,6 +31,19 @@ namespace PaymentsDashboard.Data
 			return payment;
 		}
 
+		public static ReoccuringPayment RemoveCycle(this ReoccuringPayment payment)
+		{
+			if (payment.Tags != null)
+			{
+				foreach (var t in payment.Tags)
+				{
+					t.Payments.Clear();
+				}
+			}
+
+			return payment;
+		}
+
 		public static ICollection<Tag> RemoveCycle(this IQueryable<Tag> tags)
 		{
 			var result = tags.Select(t =>
