@@ -29,8 +29,7 @@ namespace PaymentsDashboard.Data
 			{
 				foreach (var t in payment.Tags)
 				{
-					t.Payments.Clear();
-					t.ReoccuringPayments.Clear();
+					ClearPaymentsInTag(t);
 				}
 			}
 
@@ -43,12 +42,24 @@ namespace PaymentsDashboard.Data
 			{
 				foreach (var t in payment.Tags)
 				{
-					t.Payments.Clear();
-					t.ReoccuringPayments.Clear();
+					ClearPaymentsInTag(t);
 				}
 			}
 
 			return payment;
+		}
+
+		private static void ClearPaymentsInTag(Tag tag)
+		{
+			if (tag.Payments != null)
+			{
+				tag.Payments.Clear();
+			}
+
+			if (tag.ReoccuringPayments != null)
+			{
+				tag.ReoccuringPayments.Clear();
+			}
 		}
 
 		public static ICollection<Tag> RemoveCycle(this IQueryable<Tag> tags)
