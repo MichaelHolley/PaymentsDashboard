@@ -13,9 +13,15 @@ export class NavComponent implements OnInit {
 
   expandedOnMobile: boolean = false;
 
-  constructor( ) { }
+  routes: { route: string, title: string, icon: any }[] = [];
+
+  constructor() { }
 
   ngOnInit() {
+    this.routes.push({ route: '', title: 'Payments', icon: faMoneyBillWave });
+    this.routes.push({ route: 'ReoccuringPayments', title: 'Reoccuring', icon: faHistory });
+    this.routes.push({ route: 'Tags', title: 'Tags', icon: faTag });
+    this.routes.push({ route: 'Charts', title: 'Charts', icon: faChartLine });
   }
 
   toggleNavbar(value: boolean) {
