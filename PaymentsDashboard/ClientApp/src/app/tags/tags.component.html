@@ -60,7 +60,7 @@
       <tr *ngFor="let tag of displayedTags">
         <td>{{ tag.title }}</td>
         <td [style.background-color]="tag.hexColorCode">{{ tag.hexColorCode }}</td>
-        <td>{{ tag.payments.length }}</td>
+        <td>{{ tag.payments.length + tag.reoccuringPayments.length }}</td>
         <td>{{ tag.created | date }}</td>
         <td>
           <a class="col" (click)="editTag(tag)"><fa-icon class="icon" [icon]="faEdit"></fa-icon></a>

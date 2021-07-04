@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PaymentsDashboard.Data;
 
 namespace PaymentsDashboard.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210703134823_ReoccuringPayments")]
+    partial class ReoccuringPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,6 +99,9 @@ namespace PaymentsDashboard.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ReoccuringPaymentId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -106,22 +111,9 @@ namespace PaymentsDashboard.Migrations
 
                     b.HasKey("TagId");
 
+                    b.HasIndex("ReoccuringPaymentId");
+
                     b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("ReoccuringPaymentTag", b =>
-                {
-                    b.Property<Guid>("ReoccuringPaymentsId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("TagsTagId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ReoccuringPaymentsId", "TagsTagId");
-
-                    b.HasIndex("TagsTagId");
-
-                    b.ToTable("ReoccuringPaymentTag");
                 });
 
             modelBuilder.Entity("PaymentTag", b =>
@@ -139,19 +131,16 @@ namespace PaymentsDashboard.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ReoccuringPaymentTag", b =>
+            modelBuilder.Entity("PaymentsDashboard.Data.Modells.Tag", b =>
                 {
                     b.HasOne("PaymentsDashboard.Data.Modells.ReoccuringPayment", null)
-                        .WithMany()
-                        .HasForeignKey("ReoccuringPaymentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Tags")
+                        .HasForeignKey("ReoccuringPaymentId");
+                });
 
-                    b.HasOne("PaymentsDashboard.Data.Modells.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsTagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("PaymentsDashboard.Data.Modells.ReoccuringPayment", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

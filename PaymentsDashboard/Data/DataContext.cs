@@ -8,5 +8,6 @@ namespace PaymentsDashboard.Data
 		public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 		public DbSet<Tag> Tags { get; set; }
 		public DbSet<Payment> Payments { get; set; }
+		public DbSet<ReoccuringPayment> ReoccuringPayments { get; set; }
 	}
 }
