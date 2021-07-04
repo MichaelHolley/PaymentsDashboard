@@ -43,6 +43,7 @@ export class Tag extends CreatedBase {
   hexColorCode: string;
   type: TagType;
   payments: Payment[];
+  reoccuringPayments: ReoccuringPayment[];
 }
 
 export class PaymentsPerDateModel {

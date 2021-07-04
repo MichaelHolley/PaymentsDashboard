@@ -4,6 +4,7 @@ import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-soli
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../../assets/shared/dialogs/confirm-dialog.component';
 import { Payment, PaymentsPerDateModel, Tag, TagType } from '../../assets/shared/models/models';
+import { DateTimeHelperService } from '../../assets/shared/services/datetimehelper.service';
 import { PaymentService } from '../../assets/shared/services/payment.service';
 import { TagService } from '../../assets/shared/services/tag.service';
 
@@ -34,7 +35,7 @@ export class PaymentsComponent implements OnInit {
     paymentId: undefined,
     title: '',
     amount: 0,
-    date: this.dateToString(new Date),
+    date: this.dateTimeHelperService.dateToString(new Date),
     primaryTag: undefined,
     secondaryTags: []
   }
@@ -42,7 +43,8 @@ export class PaymentsComponent implements OnInit {
   constructor(private tagsService: TagService,
     private paymentService: PaymentService,
     private formBuilder: FormBuilder,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private dateTimeHelperService: DateTimeHelperService
   ) { }
 
   ngOnInit() {
@@ -175,10 +177,6 @@ export class PaymentsComponent implements OnInit {
     this.showForm = !this.showForm;
     this.resetForm();
     this.getTags();
-  }
-
-  dateToString(date: Date) {
-    return (date.getFullYear() + '-' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())));
   }
 
   deletePayment(payment: Payment) {

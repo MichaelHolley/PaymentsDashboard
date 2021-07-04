@@ -21,6 +21,7 @@ import { ConfirmDialogComponent } from '../assets/shared/dialogs/confirm-dialog.
 import { InputValidationComponent } from '../assets/shared/inputcomponents/input-validation.component';
 import { ReoccuringPaymentsComponent } from './reoccuring-payments/reoccuring-payments.component';
 import { ReoccuringPaymentService } from '../assets/shared/services/reoccuringpayment.service';
+import { DateTimeHelperService } from '../assets/shared/services/datetimehelper.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { ReoccuringPaymentService } from '../assets/shared/services/reoccuringpa
     PaymentService,
     TagService,
     ChartsService,
-    ReoccuringPaymentService
+    ReoccuringPaymentService,
+    DateTimeHelperService
   ],
   bootstrap: [AppComponent]
 })
