@@ -17,5 +17,6 @@ namespace PaymentsDashboard.Data.Modells
 		[Required]
 		public TagType Type { get; set; }
 		public ICollection<Payment> Payments { get; set; }
+		public ICollection<ReoccuringPayment> ReoccuringPayments { get; set; }
 	}
 }
