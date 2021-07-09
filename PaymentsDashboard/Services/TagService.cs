@@ -17,7 +17,6 @@ namespace PaymentsDashboard.Services
 		public Tag CreateTag(Tag tag)
 		{
 			tag.Payments = null;
-			tag.Created = DateTime.Now;
 
 			_context.Tags.Add(tag);
 			_context.SaveChanges();
