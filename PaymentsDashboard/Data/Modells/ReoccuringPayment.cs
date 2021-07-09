@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PaymentsDashboard.Data.Modells
 {
-	public class ReoccuringPayment : CreatedBase
+	public class ReoccuringPayment : EntityBase
 	{
 		public Guid Id { get; set; }
 		public string Title { get; set; }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PaymentsDashboard.Data.Modells
 {
-	public class Tag : CreatedBase
+	public class Tag : EntityBase
 	{
 		public Guid TagId { get; set; }
 

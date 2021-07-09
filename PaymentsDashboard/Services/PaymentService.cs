@@ -58,7 +58,6 @@ namespace PaymentsDashboard.Services
 		public Payment CreatePayment(Payment payment)
 		{
 			payment.Tags = GetTrackedTagsList(payment.Tags);
-			payment.Created = DateTime.Now;
 
 			_context.Payments.Add(payment);
 			_context.SaveChanges();
@@ -126,7 +125,6 @@ namespace PaymentsDashboard.Services
 		public ReoccuringPayment CreateReoccuringPayment(ReoccuringPayment payment)
 		{
 			payment.Tags = GetTrackedTagsList(payment.Tags);
-			payment.Created = DateTime.Now;
 
 			_context.ReoccuringPayments.Add(payment);
 			_context.SaveChanges();
