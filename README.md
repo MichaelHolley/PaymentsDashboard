@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://img.shields.io/github/issues/MichaelHolley/PaymentsDashboard" alt="Issues"/>
+  <img src="https://img.shields.io/github/issues-pr/MichaelHolley/PaymentsDashboard" alt="Open Pull-Requests"/>  
+</p>
+
 # PaymentsDashboard
 A Dashboard for managing outgoing payments/expenses with tags and more features to come.
 
