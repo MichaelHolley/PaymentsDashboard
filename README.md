@@ -1,6 +1,10 @@
 <p align="center">
-  <img src="https://img.shields.io/github/issues/MichaelHolley/PaymentsDashboard" alt="Issues"/>
-  <img src="https://img.shields.io/github/issues-pr/MichaelHolley/PaymentsDashboard" alt="Open Pull-Requests"/>  
+  <a href="https://github.com/MichaelHolley/PaymentsDashboard/issues">
+    <img src="https://img.shields.io/github/issues/MichaelHolley/PaymentsDashboard" alt="Issues"/>
+  </a>
+  <a href="https://github.com/MichaelHolley/PaymentsDashboard/pulls">
+    <img src="https://img.shields.io/github/issues-pr/MichaelHolley/PaymentsDashboard" alt="Pull-Requests"/>
+  </a>  
 </p>
 
 # PaymentsDashboard
