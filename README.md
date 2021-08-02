@@ -4,7 +4,9 @@
   </a>
   <a href="https://github.com/MichaelHolley/PaymentsDashboard/pulls">
     <img src="https://img.shields.io/github/issues-pr/MichaelHolley/PaymentsDashboard" alt="Pull-Requests"/>
-  </a>  
+  </a>
+  <img src="https://img.shields.io/github/repo-size/MichaelHolley/PaymentsDashboard" alt="GitHub repo size"/>
+  <img src="https://img.shields.io/tokei/lines/github/MichaelHolley/PaymentsDashboard" alt="Lines of Code"/>
 </p>
 
 # PaymentsDashboard
