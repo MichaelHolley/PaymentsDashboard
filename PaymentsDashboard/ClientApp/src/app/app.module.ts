@@ -7,21 +7,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgApexchartsModule } from 'ng-apexcharts';
 
-import { PaymentService } from '../assets/shared/services/payment.service';
-import { TagService } from '../assets/shared/services/tag.service';
+import { PaymentService } from './shared/services/payment.service';
+import { TagService } from './shared/services/tag.service';
 
 import { AppComponent } from './app.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { TagsComponent } from './tags/tags.component';
 import { NavComponent } from './nav/nav.component';
 import { ChartsComponent } from './charts/charts.component';
-import { ChartsService } from '../assets/shared/services/charts.service';
+import { ChartsService } from './shared/services/charts.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { ConfirmDialogComponent } from '../assets/shared/dialogs/confirm-dialog.component';
-import { InputValidationComponent } from '../assets/shared/inputcomponents/input-validation.component';
+import { ConfirmDialogComponent } from './shared/dialogs/confirm-dialog.component';
+import { InputValidationComponent } from './shared/inputcomponents/input-validation.component';
 import { ReoccuringPaymentsComponent } from './reoccuring-payments/reoccuring-payments.component';
-import { ReoccuringPaymentService } from '../assets/shared/services/reoccuringpayment.service';
-import { DateTimeHelperService } from '../assets/shared/services/datetimehelper.service';
+import { ReoccuringPaymentService } from './shared/services/reoccuringpayment.service';
+import { DateTimeHelperService } from './shared/services/datetimehelper.service';
 
 @NgModule({
   declarations: [
