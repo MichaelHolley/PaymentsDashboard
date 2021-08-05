@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PaymentService } from '../../assets/shared/services/payment.service';
-import { TagService } from '../../assets/shared/services/tag.service';
+import { PaymentService } from '../shared/services/payment.service';
+import { TagService } from '../shared/services/tag.service';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexYAxis, ApexTitleSubtitle, ApexDataLabels, ApexPlotOptions, ApexFill, ApexTooltip } from "ng-apexcharts";
-import { Payment, Tag } from '../../assets/shared/models/models';
-import { ChartsService } from '../../assets/shared/services/charts.service';
+import { Payment, Tag } from '../shared/models/models';
+import { ChartsService } from '../shared/services/charts.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
