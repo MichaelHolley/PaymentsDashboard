@@ -14,11 +14,14 @@ import { AppComponent } from './app.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { TagsComponent } from './tags/tags.component';
 import { NavComponent } from './nav/nav.component';
-import { StatisticsComponent } from './statistics/statistics.component';
-import { StatisticsService } from '../assets/shared/services/statistics.service';
+import { ChartsComponent } from './charts/charts.component';
+import { ChartsService } from '../assets/shared/services/charts.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../assets/shared/dialogs/confirm-dialog.component';
 import { InputValidationComponent } from '../assets/shared/inputcomponents/input-validation.component';
+import { ReoccuringPaymentsComponent } from './reoccuring-payments/reoccuring-payments.component';
+import { ReoccuringPaymentService } from '../assets/shared/services/reoccuringpayment.service';
+import { DateTimeHelperService } from '../assets/shared/services/datetimehelper.service';
 
 @NgModule({
   declarations: [
@@ -26,9 +29,10 @@ import { InputValidationComponent } from '../assets/shared/inputcomponents/input
     PaymentsComponent,
     TagsComponent,
     NavComponent,
-    StatisticsComponent,
+    ChartsComponent,
     ConfirmDialogComponent,
-    InputValidationComponent
+    InputValidationComponent,
+    ReoccuringPaymentsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -46,7 +50,9 @@ import { InputValidationComponent } from '../assets/shared/inputcomponents/input
   providers: [
     PaymentService,
     TagService,
-    StatisticsService
+    ChartsService,
+    ReoccuringPaymentService,
+    DateTimeHelperService
   ],
   bootstrap: [AppComponent]
 })

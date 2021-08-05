@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace PaymentsDashboard.Data.Modells
 {
-	public class Payment : EntityBase
+	public class ReoccuringPayment : EntityBase
 	{
-		public Guid PaymentId { get; set; }
+		public Guid Id { get; set; }
 		public string Title { get; set; }
 		public decimal Amount { get; set; }
-
-		[Required]
-		public string Date { get; set; }
+		public string StartDate { get; set; }
+		public string EndDate { get; set; }
+		public ReoccuringType ReoccuringType { get; set; }
 		public ICollection<Tag> Tags { get; set; }
 	}
 }

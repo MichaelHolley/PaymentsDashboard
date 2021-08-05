@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PaymentsDashboard.Data;
 
 namespace PaymentsDashboard.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210704090142_FixedReoccuringPaymentsTagRelation")]
+    partial class FixedReoccuringPaymentsTagRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,9 +49,6 @@ namespace PaymentsDashboard.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
@@ -71,9 +70,6 @@ namespace PaymentsDashboard.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EndDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Modified")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReoccuringType")
@@ -101,9 +97,6 @@ namespace PaymentsDashboard.Migrations
 
                     b.Property<string>("HexColorCode")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Modified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")

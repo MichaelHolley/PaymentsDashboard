@@ -19,7 +19,6 @@ export class TagsComponent implements OnInit {
   showForm = false;
   tagForm: FormGroup;
   tagTypes = [];
-  TagType = TagType;
 
   displayTagType = 0;
   displayedTags: Tag[];
@@ -55,6 +54,7 @@ export class TagsComponent implements OnInit {
 
   getTags() {
     this.tagService.getAllTags().subscribe(result => {
+      console.log(result);
       this.displayedTags = result.filter(t => t.type === this.displayTagType);
     });
   }

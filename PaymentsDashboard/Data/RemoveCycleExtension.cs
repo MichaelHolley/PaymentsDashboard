@@ -14,6 +14,11 @@ namespace PaymentsDashboard.Data
 				{
 					p.RemoveCycle();
 				}
+
+				foreach (var rp in tag.ReoccuringPayments)
+				{
+					rp.RemoveCycle();
+				}
 			}
 			return tag;
 		}
@@ -24,11 +29,37 @@ namespace PaymentsDashboard.Data
 			{
 				foreach (var t in payment.Tags)
 				{
-					t.Payments.Clear();
+					ClearPaymentsInTag(t);
 				}
 			}
 
 			return payment;
+		}
+
+		public static ReoccuringPayment RemoveCycle(this ReoccuringPayment payment)
+		{
+			if (payment.Tags != null)
+			{
+				foreach (var t in payment.Tags)
+				{
+					ClearPaymentsInTag(t);
+				}
+			}
+
+			return payment;
+		}
+
+		private static void ClearPaymentsInTag(Tag tag)
+		{
+			if (tag.Payments != null)
+			{
+				tag.Payments.Clear();
+			}
+
+			if (tag.ReoccuringPayments != null)
+			{
+				tag.ReoccuringPayments.Clear();
+			}
 		}
 
 		public static ICollection<Tag> RemoveCycle(this IQueryable<Tag> tags)
@@ -47,7 +78,19 @@ namespace PaymentsDashboard.Data
 							Title = p.Title,
 							Amount = p.Amount,
 							Date = p.Date,
-							Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, Type = pt.Type, Created = pt.Created }).ToList(),
+							Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, ReoccuringPayments = null, Type = pt.Type, Created = pt.Created }).ToList(),
+							Created = p.Created
+						}).ToList(),
+					ReoccuringPayments = t.ReoccuringPayments.Select(p =>
+						new ReoccuringPayment()
+						{
+							Id = p.Id,
+							Title = p.Title,
+							Amount = p.Amount,
+							StartDate = p.StartDate,
+							EndDate = p.EndDate,
+							ReoccuringType = p.ReoccuringType,
+							Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, ReoccuringPayments = null, Type = pt.Type, Created = pt.Created }).ToList(),
 							Created = p.Created
 						}).ToList(),
 					Created = t.Created
@@ -66,12 +109,31 @@ namespace PaymentsDashboard.Data
 						Title = p.Title,
 						Amount = p.Amount,
 						Date = p.Date,
-						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, Type = pt.Type, Created = pt.Created }).ToList(),
+						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, ReoccuringPayments = null, Type = pt.Type, Created = pt.Created }).ToList(),
 						Created = p.Created
 					}
 				).ToList();
 
 				return result;
+		}
+
+		public static ICollection<ReoccuringPayment> RemoveCycle(this IQueryable<ReoccuringPayment> payments)
+		{
+			var result = payments.Select(p =>
+					new ReoccuringPayment()
+					{
+						Id = p.Id,
+						Title = p.Title,
+						Amount = p.Amount,
+						StartDate = p.StartDate,
+						EndDate = p.EndDate,
+						ReoccuringType = p.ReoccuringType,
+						Tags = p.Tags.Select(pt => new Tag() { TagId = pt.TagId, Title = pt.Title, HexColorCode = pt.HexColorCode, Payments = null, ReoccuringPayments = null, Type = pt.Type, Created = pt.Created }).ToList(),
+						Created = p.Created
+					}
+				).ToList();
+
+			return result;
 		}
 	}
 }

@@ -1,14 +1,8 @@
 <!-- MOBILE - STILL WIP -->
 <nav class="navbar container d-block d-sm-none p-0">
   <ul class="navbar-nav mr-auto" *ngIf="expandedOnMobile">
-    <li class="nav-item pl-2">
-      <a class="nav-link font-weight-bold" [routerLink]="['']"><fa-icon [icon]="faMoneyBillWave"></fa-icon> Payments</a>
-    </li>
-    <li class="nav-item pl-2">
-      <a class="nav-link font-weight-bold" [routerLink]="['Tags']"><fa-icon [icon]="faTag"></fa-icon> Tags</a>
-    </li>
-    <li class="nav-item pl-2">
-      <a class="nav-link font-weight-bold" [routerLink]="['Statistics']"><fa-icon [icon]="faChartLine"></fa-icon> Statistics</a>
+    <li *ngFor="let route of routes" class="nav-item pl-2">
+      <a class="nav-link font-weight-bold" [routerLink]="[route.route]"><fa-icon [icon]="route.icon"></fa-icon> {{route.title}}</a>
     </li>
   </ul>
 </nav>
@@ -17,14 +11,8 @@
 <nav class="navbar navbar-expand-sm d-none d-sm-block py-0">
   <div class="container">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item px-2">
-        <a class="nav-link font-weight-bold" [routerLink]="['']"><fa-icon [icon]="faMoneyBillWave"></fa-icon> Payments</a>
-      </li>
-      <li class="nav-item px-2">
-        <a class="nav-link font-weight-bold" [routerLink]="['Tags']"><fa-icon [icon]="faTag"></fa-icon> Tags</a>
-      </li>
-      <li class="nav-item px-2">
-        <a class="nav-link font-weight-bold" [routerLink]="['Statistics']"><fa-icon [icon]="faChartLine"></fa-icon> Statistics</a>
+      <li *ngFor="let route of routes" class="nav-item px-2">
+        <a class="nav-link font-weight-bold" [routerLink]="[route.route]"><fa-icon [icon]="route.icon"></fa-icon> {{route.title}}</a>
       </li>
     </ul>
   </div>

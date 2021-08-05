@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
-using PaymentsDashboard.Data.Modells.Statistics;
+using PaymentsDashboard.Data.Modells.Charts;
 using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,12 @@ namespace PaymentsDashboard.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class StatisticsController : ControllerBase
+	public class ChartsController : ControllerBase
 	{
 		private readonly IPaymentService paymentService;
 		private readonly ITagService tagService;
 
-		public StatisticsController(IPaymentService paymentService, ITagService tagService)
+		public ChartsController(IPaymentService paymentService, ITagService tagService)
 		{
 			this.paymentService = paymentService;
 			this.tagService = tagService;

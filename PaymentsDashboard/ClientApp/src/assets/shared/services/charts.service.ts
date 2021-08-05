@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Tag } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StatisticsService {
+export class ChartsService {
 
-  URL = "api/Statistics";
+  URL = "api/Charts";
 
   constructor(private httpClient: HttpClient) { }
 

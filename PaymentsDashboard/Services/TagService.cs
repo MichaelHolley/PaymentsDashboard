@@ -17,7 +17,6 @@ namespace PaymentsDashboard.Services
 		public Tag CreateTag(Tag tag)
 		{
 			tag.Payments = null;
-			tag.Created = DateTime.Now;
 
 			_context.Tags.Add(tag);
 			_context.SaveChanges();
@@ -40,31 +39,24 @@ namespace PaymentsDashboard.Services
 			return tag;
 		}
 
-		public IQueryable<Tag> GetAllTags(bool includePayments = true)
+		public IQueryable<Tag> GetAllTags()
 		{
-			if (includePayments)
-			{
-				return _context.Tags.Include(r => r.Payments);
-			}
-			else
-			{
-				return _context.Tags;
-			}
+			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments);
 		}
 
 		public IQueryable<Tag> GetPrimaryTags()
 		{
-			return _context.Tags.Include(r => r.Payments).Where(r => r.Type.Equals(TagType.Primary));
+			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments).Where(r => r.Type.Equals(TagType.Primary));
 		}
 
 		public IQueryable<Tag> GetSecondaryTags()
 		{
-			return _context.Tags.Include(r => r.Payments).Where(r => r.Type.Equals(TagType.Secondary));
+			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments).Where(r => r.Type.Equals(TagType.Secondary));
 		}
 
 		public Tag GetTagById(Guid Id, bool tracked = false)
 		{
-			var tag = _context.Tags.Include(t => t.Payments).Where(t => t.TagId.Equals(Id));
+			var tag = _context.Tags.Include(t => t.Payments).Include(r => r.ReoccuringPayments).Where(t => t.TagId.Equals(Id));
 
 			if (!tracked)
 			{
