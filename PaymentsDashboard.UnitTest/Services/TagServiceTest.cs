@@ -18,21 +18,38 @@ namespace PaymentsDashboard.UnitTest.Services
 		Tag tag1 = new Tag()
 		{
 			TagId = Guid.NewGuid(),
-			Payments = new List<Payment>(),
-			ReoccuringPayments = new List<ReoccuringPayment>(),
 			Title = "Tag 1",
 			HexColorCode = "#123123",
-			Type = TagType.Primary
+			Type = TagType.Primary,
+			Payments = new List<Payment>() {
+				new Payment() {
+					PaymentId = Guid.NewGuid(),
+					Amount = new decimal(1.23),
+					Date = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
+					Tags = new List<Tag>(),
+					Title = "Payment A"
+				}
+			},
+			ReoccuringPayments = new List<ReoccuringPayment>()
 		};
 
 		Tag tag2 = new Tag()
 		{
 			TagId = Guid.NewGuid(),
 			Payments = new List<Payment>(),
-			ReoccuringPayments = new List<ReoccuringPayment>(),
 			Title = "Tag 2",
 			HexColorCode = "#111111",
-			Type = TagType.Primary
+			Type = TagType.Primary,
+			ReoccuringPayments = new List<ReoccuringPayment>() {
+				new ReoccuringPayment() {
+					Id = Guid.NewGuid(),
+					Amount = new decimal(1.23),
+					ReoccuringType = ReoccuringType.Yearly,
+					StartDate = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
+					Tags = new List<Tag>(),
+					Title = "ReoccuringPayment A"
+				}
+			}
 		};
 
 		Tag tag3 = new Tag()
@@ -68,6 +85,19 @@ namespace PaymentsDashboard.UnitTest.Services
 			context.Tags.RemoveRange(context.Tags);
 
 			context.Tags.AddRange(new List<Tag>() { tag1, tag2, tag3, tag4 });
+
+			foreach (var p in tag1.Payments)
+			{
+				p.Tags.Add(tag1);
+			}
+
+			foreach (var p in tag2.ReoccuringPayments)
+			{
+				p.Tags.Add(tag2);
+			}
+
+			context.Payments.AddRange(tag1.Payments);
+			context.ReoccuringPayments.AddRange(tag2.ReoccuringPayments);
 			context.SaveChanges();
 		}
 
@@ -116,16 +146,16 @@ namespace PaymentsDashboard.UnitTest.Services
 		{
 			var service = new TagService(context);
 
-			var result = service.GetTagById(tag3.TagId);
+			var result = service.GetTagById(tag1.TagId);
 
-			Assert.AreEqual(tag3.TagId, result.TagId);
-			Assert.AreEqual(tag3.Type, result.Type);
-			Assert.AreEqual(tag3.Title, result.Title);
-			Assert.AreEqual(tag3.Modified, result.Modified);
-			Assert.AreEqual(tag3.Created, result.Created);
-			Assert.AreEqual(tag3.HexColorCode, result.HexColorCode);
-			Assert.AreEqual(tag3.Payments.Count, result.Payments.Count);
-			Assert.AreEqual(tag3.ReoccuringPayments.Count, result.ReoccuringPayments.Count);
+			Assert.AreEqual(tag1.TagId, result.TagId);
+			Assert.AreEqual(tag1.Type, result.Type);
+			Assert.AreEqual(tag1.Title, result.Title);
+			Assert.AreEqual(tag1.Modified, result.Modified);
+			Assert.AreEqual(tag1.Created, result.Created);
+			Assert.AreEqual(tag1.HexColorCode, result.HexColorCode);
+			Assert.AreEqual(tag1.Payments.Count, result.Payments.Count);
+			Assert.AreEqual(tag1.ReoccuringPayments.Count, result.ReoccuringPayments.Count);
 		}
 
 		[TestMethod]
@@ -195,6 +225,58 @@ namespace PaymentsDashboard.UnitTest.Services
 			var result = service.DeleteTagById(Guid.NewGuid());
 
 			Assert.IsNull(result);
+		}
+
+		[TestMethod]
+		public void RemoveCycle_ForManyTags_ShouldRemoveCycle()
+		{
+			var service = new TagService(context);
+
+			var result = service.GetAllTags();
+			var cleaned = result.RemoveCycle();
+
+			foreach (var t in cleaned)
+			{
+				Assert.IsTrue(HasNoCycle(t));
+			}
+		}
+
+		[TestMethod]
+		public void RemoveCycle_ForSingleTagWithPayments_ShouldRemoveCycle()
+		{
+			var service = new TagService(context);
+
+			var result = service.GetTagById(tag1.TagId, tracked: false);
+			var cleaned = result.RemoveCycle();
+
+			Assert.IsTrue(HasNoCycle(cleaned));
+		}
+
+		[TestMethod]
+		public void RemoveCycle_ForSingleTagWithReoccuring_ShouldRemoveCycle()
+		{
+			var service = new TagService(context);
+
+			var result = service.GetTagById(tag2.TagId, tracked: false);
+			var cleaned = result.RemoveCycle();
+
+			Assert.IsTrue(HasNoCycle(cleaned));
+		}
+
+		private bool HasNoCycle(Tag tag)
+		{
+			foreach (var p in tag.Payments)
+			{
+				foreach (var t in p.Tags)
+				{
+					if (t.Payments != null && t.Payments.Count > 0)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
 		}
 	}
 }
