@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ConfirmDialogComponent } from '../../assets/shared/dialogs/confirm-dialog.component';
-import { Tag, TagType } from '../../assets/shared/models/models';
-import { TagService } from '../../assets/shared/services/tag.service';
+import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog.component';
+import { Tag, TagType } from '../shared/models/models';
+import { TagService } from '../shared/services/tag.service';
 
 @Component({
   selector: 'app-tags',
