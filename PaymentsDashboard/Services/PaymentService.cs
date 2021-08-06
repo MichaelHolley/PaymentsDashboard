@@ -69,6 +69,11 @@ namespace PaymentsDashboard.Services
 		{
 			Payment paymentById = GetPaymentById(payment.PaymentId, true);
 
+			if(paymentById == null)
+			{
+				return null;
+			}
+
 			paymentById.Amount = payment.Amount;
 			paymentById.Date = payment.Date;
 			paymentById.Title = payment.Title;
@@ -135,6 +140,11 @@ namespace PaymentsDashboard.Services
 		public ReoccuringPayment UpdateReoccuringPayment(ReoccuringPayment payment)
 		{
 			ReoccuringPayment paymentById = GetReoccuringPaymentById(payment.Id, true);
+
+			if(paymentById == null)
+			{
+				return null;
+			}
 
 			paymentById.Amount = payment.Amount;
 			paymentById.Title = payment.Title;
