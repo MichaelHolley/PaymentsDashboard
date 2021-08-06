@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/tokei/lines/github/MichaelHolley/PaymentsDashboard" alt="Lines of Code"/>
 </p>
 
-# PaymentsDashboard
+# PaymentsDashboard [![.NET](https://github.com/MichaelHolley/PaymentsDashboard/actions/workflows/CI.yml/badge.svg?branch=master)]
 A Dashboard for managing outgoing payments/expenses with tags and more features to come.
 
 # Payments
