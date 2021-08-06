@@ -14,12 +14,16 @@ namespace PaymentsDashboard.Data
 				{
 					p.RemoveCycle();
 				}
+			}
 
+			if (tag.ReoccuringPayments != null)
+			{
 				foreach (var rp in tag.ReoccuringPayments)
 				{
 					rp.RemoveCycle();
 				}
 			}
+
 			return tag;
 		}
 
@@ -114,7 +118,7 @@ namespace PaymentsDashboard.Data
 					}
 				).ToList();
 
-				return result;
+			return result;
 		}
 
 		public static ICollection<ReoccuringPayment> RemoveCycle(this IQueryable<ReoccuringPayment> payments)
