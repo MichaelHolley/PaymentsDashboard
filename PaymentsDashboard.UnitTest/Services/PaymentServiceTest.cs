@@ -230,6 +230,30 @@ namespace PaymentsDashboard.UnitTest.Services
 			var result = service.UpdatePayment(payment1);
 			Assert.IsNull(result);
 		}
+
+		[TestMethod]
+		public void RemoveCycle_ForManyPayments_ShouldRemoveCycle()
+		{
+			var service = new PaymentService(context);
+
+			var result = service.GetAllPayments();
+			var cleaned = result.RemoveCycle();
+
+			Assert.IsNull(cleaned.First().Tags.First().Payments);
+			Assert.IsTrue(!cleaned.Any(p => p.Tags.Any(t => t.Payments != null)));
+		}
+
+		[TestMethod]
+		public void RemoveCycle_ForSinglePayment_ShouldRemoveCycle()
+		{
+			var service = new PaymentService(context);
+
+			var result = service.GetPaymentById(payment1.PaymentId);
+			var cleaned = result.RemoveCycle();
+
+			Assert.AreEqual(0, cleaned.Tags.First().Payments.Count);
+			Assert.IsTrue(!cleaned.Tags.Any(t => t.Payments != null && t.Payments.Count > 0));
+		}
 	}
 }
 

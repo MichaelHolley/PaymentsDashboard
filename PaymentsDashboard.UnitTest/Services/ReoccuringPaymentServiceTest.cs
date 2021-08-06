@@ -8,10 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace ReoccuringPaymentsDashboard.UnitTest.Services
+namespace PaymentsDashboard.UnitTest.Services
 {
 	[TestClass]
-	public class PaymentServiceTest
+	public class ReoccuringPaymentServiceTest
 	{
 		private DataContext context;
 
