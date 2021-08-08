@@ -2,6 +2,9 @@
   <a href="https://github.com/MichaelHolley/PaymentsDashboard/issues">
     <img src="https://img.shields.io/github/issues/MichaelHolley/PaymentsDashboard" alt="Issues"/>
   </a>
+  <a href="https://github.com/MichaelHolley/PaymentsDashboard/issues?q=is%3Aissue+is%3Aclosed">
+    <img src="https://img.shields.io/github/issues-closed-raw/MichaelHolley/PaymentsDashboard" alt="Issues"/>
+  </a
   <a href="https://github.com/MichaelHolley/PaymentsDashboard/pulls">
     <img src="https://img.shields.io/github/issues-pr/MichaelHolley/PaymentsDashboard" alt="Pull-Requests"/>
   </a>
