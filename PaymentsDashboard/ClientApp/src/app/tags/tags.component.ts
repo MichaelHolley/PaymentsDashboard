@@ -54,7 +54,6 @@ export class TagsComponent implements OnInit {
 
   getTags() {
     this.tagService.getAllTags().subscribe(result => {
-      console.log(result);
       this.displayedTags = result.filter(t => t.type === this.displayTagType);
     });
   }
