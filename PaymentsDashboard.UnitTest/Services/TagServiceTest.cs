@@ -25,7 +25,7 @@ namespace PaymentsDashboard.UnitTest.Services
 				new Payment() {
 					PaymentId = Guid.NewGuid(),
 					Amount = new decimal(1.23),
-					Date = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
+					Date = DateOnly.FromDateTime(DateTime.Now.AddMonths(-1).AddDays(-3)),
 					Tags = new List<Tag>(),
 					Title = "Payment A"
 				}
@@ -45,7 +45,7 @@ namespace PaymentsDashboard.UnitTest.Services
 					Id = Guid.NewGuid(),
 					Amount = new decimal(1.23),
 					ReoccuringType = ReoccuringType.Yearly,
-					StartDate = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
+					StartDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-1).AddDays(-3)),
 					Tags = new List<Tag>(),
 					Title = "ReoccuringPayment A"
 				}

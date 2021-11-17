@@ -19,7 +19,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		{
 			PaymentId = Guid.NewGuid(),
 			Amount = new decimal(1.23),
-			Date = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
+			Date = DateOnly.FromDateTime(DateTime.Now.AddMonths(-1).AddDays(-3)),
 			Tags = new List<Tag>()
 			{
 				new Tag()
@@ -37,7 +37,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		{
 			PaymentId = Guid.NewGuid(),
 			Amount = new decimal(22.22),
-			Date = DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd"),
+			Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-5)),
 			Tags = new List<Tag>()
 			{
 				new Tag()
@@ -179,7 +179,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			{
 				PaymentId = Guid.NewGuid(),
 				Amount = new decimal(123.123),
-				Date = DateTime.Now.AddDays(-17).ToString("yyyy-MM-dd"),
+				Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-17)),
 				Tags = new List<Tag>()
 				{
 					payment1.Tags.First(),

@@ -35,9 +35,9 @@ namespace PaymentsDashboard.Services
 
 		public IQueryable<Payment> GetPaymentsByMonths(int numberOfMonths)
 		{
-			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
+			var date = DateOnly.FromDateTime(DateTime.UtcNow).AddMonths(numberOfMonths * -1);
 
-			return GetAllPayments().Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
+			return GetAllPayments().Where(r => r.Date.Year == date.Year && r.Date.Month == date.Month);
 		}
 
 		public Payment DeletePaymentById(Guid id)
@@ -69,7 +69,7 @@ namespace PaymentsDashboard.Services
 		{
 			Payment paymentById = GetPaymentById(payment.PaymentId, true);
 
-			if(paymentById == null)
+			if (paymentById == null)
 			{
 				return null;
 			}
@@ -141,7 +141,7 @@ namespace PaymentsDashboard.Services
 		{
 			ReoccuringPayment paymentById = GetReoccuringPaymentById(payment.Id, true);
 
-			if(paymentById == null)
+			if (paymentById == null)
 			{
 				return null;
 			}

@@ -11,7 +11,7 @@ namespace PaymentsDashboard.Data.Modells
 		public decimal Amount { get; set; }
 
 		[Required]
-		public string Date { get; set; }
+		public DateOnly Date { get; set; }
 		public ICollection<Tag> Tags { get; set; }
 	}
 }

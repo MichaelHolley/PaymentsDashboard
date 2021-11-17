@@ -8,8 +8,8 @@ namespace PaymentsDashboard.Data.Modells
 		public Guid Id { get; set; }
 		public string Title { get; set; }
 		public decimal Amount { get; set; }
-		public string StartDate { get; set; }
-		public string EndDate { get; set; }
+		public DateOnly StartDate { get; set; }
+		public DateOnly EndDate { get; set; }
 		public ReoccuringType ReoccuringType { get; set; }
 		public ICollection<Tag> Tags { get; set; }
 	}

@@ -29,8 +29,8 @@ namespace PaymentsDashboard.Controllers
 			var tags = tagService.GetPrimaryTags().RemoveCycle();
 			var values = new List<StackedBarChartMonthlyModell>();
 
-			var startDate = new DateTime(DateTime.Parse(payments.First().Date).Year, DateTime.Parse(payments.First().Date).Month, 1);
-			var finalDate = new DateTime(DateTime.Parse(payments.Last().Date).Year, DateTime.Parse(payments.Last().Date).Month + 1, 1);
+			var startDate = new DateOnly(payments.First().Date.Year, payments.First().Date.Month, 1);
+			var finalDate = new DateOnly(payments.Last().Date.Year, payments.Last().Date.Month + 1, 1);
 
 			while (startDate < finalDate)
 			{
@@ -45,7 +45,7 @@ namespace PaymentsDashboard.Controllers
 					temp.TagSums.Add(new TagSum()
 					{
 						Tag = tag,
-						Sum = payments.Where(p => p.Tags.Any(t => t.TagId.Equals(tag.TagId)) && DateTime.Parse(p.Date).Month == startDate.Month && DateTime.Parse(p.Date).Year == startDate.Year).Sum(p => p.Amount)
+						Sum = payments.Where(p => p.Tags.Any(t => t.TagId.Equals(tag.TagId)) && p.Date.Month == startDate.Month && p.Date.Year == startDate.Year).Sum(p => p.Amount)
 					});
 				}
 
@@ -63,18 +63,18 @@ namespace PaymentsDashboard.Controllers
 			var tags = tagService.GetPrimaryTags().RemoveCycle();
 			var values = new List<TagSum>();
 
-			var startDate = new DateTime(DateTime.Parse(payments.First().Date).Year, DateTime.Parse(payments.First().Date).Month, 1);
-			var finalDate = new DateTime(DateTime.Parse(payments.Last().Date).Year, DateTime.Parse(payments.Last().Date).Month + 1, 1);
+			var startDate = new DateOnly(payments.First().Date.Year, payments.First().Date.Month, 1);
+			var finalDate = new DateOnly(payments.Last().Date.Year, payments.Last().Date.Month + 1, 1);
 
 			foreach (var tag in tags)
 			{
 				values.Add(new TagSum() { Tag = tag, Sum = 0 });
 			}
 
-			var visitedMonths = new List<DateTime>();
+			var visitedMonths = new List<DateOnly>();
 			foreach (var p in payments)
 			{
-				var monthOfPayment = new DateTime(DateTime.Parse(p.Date).Year, DateTime.Parse(p.Date).Month, 1);
+				var monthOfPayment = new DateOnly(p.Date.Year, p.Date.Month, 1);
 				if (!visitedMonths.Any(vm => vm.Equals(monthOfPayment))) {
 					visitedMonths.Add(monthOfPayment);
 				}

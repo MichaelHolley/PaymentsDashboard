@@ -5,7 +5,7 @@ namespace PaymentsDashboard.Data.Modells.Charts
 {
 	public class StackedBarChartMonthlyModell
 	{
-		public DateTime Month { get; set; }
+		public DateOnly Month { get; set; }
 		public ICollection<TagSum> TagSums { get; set; }
 	}
 }

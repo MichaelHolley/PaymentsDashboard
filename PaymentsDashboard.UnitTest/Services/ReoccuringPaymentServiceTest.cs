@@ -20,7 +20,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			Id = Guid.NewGuid(),
 			Amount = new decimal(1.23),
 			ReoccuringType = ReoccuringType.Yearly,
-			StartDate = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
+			StartDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-1).AddDays(-3)),
 			Tags = new List<Tag>()
 			{
 				new Tag()
@@ -39,7 +39,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			Id = Guid.NewGuid(),
 			Amount = new decimal(22.22),
 			ReoccuringType = ReoccuringType.Weekly,
-			StartDate = DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd"),
+			StartDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-5)),
 			Tags = new List<Tag>()
 			{
 				new Tag()
@@ -159,7 +159,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			{
 				Id = Guid.NewGuid(),
 				Amount = new decimal(123.123),
-				StartDate = DateTime.Now.AddDays(-17).ToString("yyyy-MM-dd"),
+				StartDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-17)),
 				Tags = new List<Tag>()
 				{
 					reoccuringPayment1.Tags.First(),
