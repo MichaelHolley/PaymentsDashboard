@@ -22,6 +22,7 @@ import { InputValidationComponent } from './shared/inputcomponents/input-validat
 import { ReoccuringPaymentsComponent } from './reoccuring-payments/reoccuring-payments.component';
 import { ReoccuringPaymentService } from './shared/services/reoccuringpayment.service';
 import { DateTimeHelperService } from './shared/services/datetimehelper.service';
+import { AuthModule } from '@auth0/auth0-angular';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,10 @@ import { DateTimeHelperService } from './shared/services/datetimehelper.service'
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    AuthModule.forRoot({
+      domain: '',
+      clientId: ''
+    }),
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

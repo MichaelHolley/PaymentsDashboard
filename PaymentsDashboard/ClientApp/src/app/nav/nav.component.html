@@ -14,6 +14,13 @@
       <li *ngFor="let route of routes" class="nav-item px-2">
         <a class="nav-link font-weight-bold" [routerLink]="[route.route]"><fa-icon [icon]="route.icon"></fa-icon> {{route.title}}</a>
       </li>
+      <li class="nav-item px-2 float-right">
+        <a class="nav-link font-weight-bold" (click)="auth.loginWithRedirect()" *ngIf="!(auth.isAuthenticated$ | async)"><fa-icon [icon]="faSignIn"></fa-icon> Log In</a>
+        <a class="nav-link font-weight-bold" (click)="auth.logout()" *ngIf="auth.isAuthenticated$ | async"><fa-icon [icon]="faSignOut"></fa-icon> Log Out</a>
+      </li>
+      <li *ngIf="auth.user$ | async as user" class="p-2">
+        <img height="50" src="{{user.picture}}" />
+      </li>
     </ul>
   </div>
 </nav>

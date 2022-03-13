@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { faChartLine, faHistory, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '@auth0/auth0-angular';
+import { faChartLine, faHistory, faMoneyBillWave, faSignInAlt, faSignOutAlt, faTag } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-nav',
@@ -9,13 +10,20 @@ export class NavComponent implements OnInit {
   faTag = faTag;
   faMoneyBillWave = faMoneyBillWave;
   faChartLine = faChartLine;
-  faHistory = faHistory
+  faHistory = faHistory;
+  faSignIn = faSignInAlt;
+  faSignOut = faSignOutAlt;
 
   expandedOnMobile: boolean = false;
 
   routes: { route: string, title: string, icon: any }[] = [];
 
-  constructor() { }
+  constructor(public auth: AuthService) {
+    auth.user$.subscribe(p => console.log(p));
+    auth.idTokenClaims$.subscribe(p => console.log(p));
+    auth.appState$.subscribe(p => console.log(p));
+    auth.getAccessTokenSilently().subscribe(p => console.log(p));
+  }
 
   ngOnInit() {
     this.routes.push({ route: '', title: 'Payments', icon: faMoneyBillWave });
