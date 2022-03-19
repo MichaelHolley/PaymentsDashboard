@@ -9,6 +9,7 @@ using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace PaymentsDashboard.UnitTest.Services
 {
@@ -16,6 +17,8 @@ namespace PaymentsDashboard.UnitTest.Services
 	public class TagServiceTest
 	{
 		private DataContext context;
+		private Mock<IHttpContextAccessor> contextAccessorMock;
+		private readonly static string ownerId = "User12345";
 
 		Tag tag1 = new Tag()
 		{
@@ -29,10 +32,10 @@ namespace PaymentsDashboard.UnitTest.Services
 					Amount = new decimal(1.23),
 					Date = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
 					Tags = new List<Tag>(),
-					Title = "Payment A"
+					Title = "Payment A",
 				}
 			},
-			ReoccuringPayments = new List<ReoccuringPayment>()
+			ReoccuringPayments = new List<ReoccuringPayment>(),
 		};
 
 		Tag tag2 = new Tag()
@@ -49,7 +52,7 @@ namespace PaymentsDashboard.UnitTest.Services
 					ReoccuringType = ReoccuringType.Yearly,
 					StartDate = DateTime.Now.AddMonths(-1).AddDays(-3).ToString("yyyy-MM-dd"),
 					Tags = new List<Tag>(),
-					Title = "ReoccuringPayment A"
+					Title = "ReoccuringPayment A",
 				}
 			}
 		};
@@ -63,7 +66,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			HexColorCode = "#222222",
 			Type = TagType.Secondary,
 			Created = DateTime.Now.AddDays(-150),
-			Modified = DateTime.Now.AddDays(-10),
+			Modified = DateTime.Now.AddDays(-10)
 		};
 
 		Tag tag4 = new Tag()
@@ -79,9 +82,17 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestInitialize]
 		public void Init()
 		{
+			var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+			{
+				new Claim(ClaimTypes.NameIdentifier, ownerId),
+			}, "mock"));
+
+			contextAccessorMock = new Mock<IHttpContextAccessor>();
+			contextAccessorMock.Setup(x => x.HttpContext).Returns(new DefaultHttpContext() { User = user });
+
 			var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: "PaymentsDataBase").Options;
 
-			context = new DataContext(options, It.IsAny<IHttpContextAccessor>());
+			context = new DataContext(options, contextAccessorMock.Object);
 			context.Payments.RemoveRange(context.Payments);
 			context.ReoccuringPayments.RemoveRange(context.ReoccuringPayments);
 			context.Tags.RemoveRange(context.Tags);
@@ -101,12 +112,13 @@ namespace PaymentsDashboard.UnitTest.Services
 			context.Payments.AddRange(tag1.Payments);
 			context.ReoccuringPayments.AddRange(tag2.ReoccuringPayments);
 			context.SaveChanges();
+
 		}
 
 		[TestMethod]
 		public void GetAllTags_ReturnsAllTags()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetAllTags().ToList();
 
@@ -120,7 +132,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetPrimaryTags_ReturnsOnlyPrimaryTags()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetPrimaryTags().ToList();
 
@@ -133,7 +145,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetSecondaryTags_ReturnsOnlySecondaryTags()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetSecondaryTags().ToList();
 
@@ -146,7 +158,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetTagById_ValidId_ReturnsTagById()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetTagById(tag1.TagId);
 
@@ -163,7 +175,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetTagById_InvalidId_ReturnsNull()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetTagById(Guid.NewGuid());
 
@@ -183,7 +195,7 @@ namespace PaymentsDashboard.UnitTest.Services
 				Type = TagType.Primary
 			};
 
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.CreateTag(newTag);
 			var tags = context.Tags.ToList();
@@ -198,7 +210,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			var newTitle = "Updated Title";
 			tag2.Title = newTitle;
 
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.UpdateTag(tag2);
 			var tag = context.Tags.SingleOrDefault(t => t.TagId.Equals(tag2.TagId));
@@ -210,7 +222,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void DeleteTag_ValidId_DeletesTag()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.DeleteTagById(tag2.TagId);
 			var tags = context.Tags.ToList();
@@ -222,7 +234,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void DeleteTag_InvalidId_DeletesTag()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.DeleteTagById(Guid.NewGuid());
 
@@ -232,7 +244,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void RemoveCycle_ForManyTags_ShouldRemoveCycle()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetAllTags();
 			var cleaned = result.RemoveCycle();
@@ -246,7 +258,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void RemoveCycle_ForSingleTagWithPayments_ShouldRemoveCycle()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetTagById(tag1.TagId, tracked: false);
 			var cleaned = result.RemoveCycle();
@@ -257,7 +269,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void RemoveCycle_ForSingleTagWithReoccuring_ShouldRemoveCycle()
 		{
-			var service = new TagService(context);
+			var service = new TagService(context, contextAccessorMock.Object);
 
 			var result = service.GetTagById(tag2.TagId, tracked: false);
 			var cleaned = result.RemoveCycle();

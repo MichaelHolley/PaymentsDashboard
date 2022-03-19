@@ -8,7 +8,7 @@ using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Security.Claims;
 
 namespace PaymentsDashboard.UnitTest.Services
 {
@@ -16,6 +16,8 @@ namespace PaymentsDashboard.UnitTest.Services
 	public class PaymentServiceTest
 	{
 		private DataContext context;
+		private Mock<IHttpContextAccessor> contextAccessorMock;
+		private readonly static string ownerId = "User12345";
 
 		private Payment payment1 = new Payment()
 		{
@@ -29,10 +31,10 @@ namespace PaymentsDashboard.UnitTest.Services
 					TagId = Guid.NewGuid(),
 					Type = TagType.Primary,
 					HexColorCode = "#aaaaaa",
-					Payments = new List<Payment>()
+					Payments = new List<Payment>(),
 				}
 			},
-			Title = "Payment A"
+			Title = "Payment A",
 		};
 
 		private Payment payment2 = new Payment()
@@ -47,22 +49,30 @@ namespace PaymentsDashboard.UnitTest.Services
 					TagId = Guid.NewGuid(),
 					Type = TagType.Primary,
 					HexColorCode = "#111222",
-					Payments = new List<Payment>()
+					Payments = new List<Payment>(),
 				},
 				new Tag()
 				{
 					TagId = Guid.NewGuid(),
 					Type = TagType.Secondary,
 					HexColorCode = "#abcabc",
-					Payments = new List<Payment>()
+					Payments = new List<Payment>(),
 				}
 			},
-			Title = "Payment B"
+			Title = "Payment B",
 		};
 
 		[TestInitialize]
 		public void Init()
 		{
+			var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+				{
+					new Claim(ClaimTypes.NameIdentifier, ownerId),
+				}, "mock"));
+
+			contextAccessorMock = new Mock<IHttpContextAccessor>();
+			contextAccessorMock.Setup(x => x.HttpContext).Returns(new DefaultHttpContext() { User = user });
+
 			foreach (var tag in payment1.Tags)
 			{
 				tag.Payments.Add(payment1);
@@ -76,7 +86,7 @@ namespace PaymentsDashboard.UnitTest.Services
 
 			var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: "PaymentsDataBase").Options;
 
-			context = new DataContext(options, It.IsAny<IHttpContextAccessor>());
+			context = new DataContext(options, contextAccessorMock.Object);
 			context.Payments.RemoveRange(context.Payments);
 			context.Tags.RemoveRange(context.Tags);
 
@@ -90,7 +100,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetAllPayments_ReturnAllPayments()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetAllPayments().ToList();
 
@@ -102,7 +112,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetPaymentById_ValidId_ReturnsPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetPaymentById(payment1.PaymentId);
 
@@ -113,7 +123,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetPaymentById_NotExistingId_ReturnsNull()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetPaymentById(Guid.NewGuid());
 
@@ -123,7 +133,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetPaymentById_NotTracked_ReturnsPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetPaymentById(payment2.PaymentId, false);
 
@@ -134,7 +144,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetPaymentsByMonths_CurrentMonth_ReturnsAllPaymentsInCurrentMonth()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetPaymentsByMonths(0).ToList();
 
@@ -145,7 +155,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetPaymentsByMonths_LastMonth_ReturnsAllPaymentsInCurrentMonth()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetPaymentsByMonths(1).ToList();
 
@@ -156,7 +166,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void DeletePaymentById_ValidId_DeletesPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.DeletePaymentById(payment1.PaymentId);
 
@@ -167,7 +177,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void DeletePaymentById_InvalidId_DeletesPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.DeletePaymentById(Guid.NewGuid());
 
@@ -195,7 +205,7 @@ namespace PaymentsDashboard.UnitTest.Services
 				tag.Payments.Add(newPayment);
 			}
 
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.CreatePayment(newPayment);
 			var payments = service.GetAllPayments().ToList();
@@ -210,7 +220,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			decimal newValue = new decimal(111.11);
 			payment1.Amount = newValue;
 
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.UpdatePayment(payment1);
 			var payments = service.GetAllPayments().ToList();
@@ -227,7 +237,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			payment1.Amount = newValue;
 			payment1.PaymentId = Guid.NewGuid();
 
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.UpdatePayment(payment1);
 			Assert.IsNull(result);
@@ -236,7 +246,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void RemoveCycle_ForManyPayments_ShouldRemoveCycle()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetAllPayments();
 			var cleaned = result.RemoveCycle();
@@ -248,7 +258,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void RemoveCycle_ForSinglePayment_ShouldRemoveCycle()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetPaymentById(payment1.PaymentId);
 			var cleaned = result.RemoveCycle();
