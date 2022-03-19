@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '@auth0/auth0-angular';
 import { faEdit, faPlusCircle, faTrash, faUndoAlt } from '@fortawesome/free-solid-svg-icons';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../shared/dialogs/confirm-dialog.component';
@@ -17,6 +18,8 @@ export class PaymentsComponent implements OnInit {
   faTrash = faTrash;
   faEdit = faEdit;
   faUndoAlt = faUndoAlt;
+
+  isAuthenticated = false;
 
   bsModalRef: BsModalRef;
 
@@ -44,8 +47,11 @@ export class PaymentsComponent implements OnInit {
     private paymentService: PaymentService,
     private formBuilder: FormBuilder,
     private modalService: BsModalService,
-    private dateTimeHelperService: DateTimeHelperService
-  ) { }
+    private dateTimeHelperService: DateTimeHelperService,
+    private authService: AuthService
+  ) {
+    this.authService.isAuthenticated$.subscribe(auth => { this.isAuthenticated = auth });
+  }
 
   ngOnInit() {
     this.paymentForm = this.formBuilder.group({

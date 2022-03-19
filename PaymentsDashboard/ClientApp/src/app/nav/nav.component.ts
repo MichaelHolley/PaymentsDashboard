@@ -14,11 +14,16 @@ export class NavComponent implements OnInit {
   faSignIn = faSignInAlt;
   faSignOut = faSignOutAlt;
 
+  isAuthenticated = false;
+
   expandedOnMobile: boolean = false;
 
   routes: { route: string, title: string, icon: any }[] = [];
 
-  constructor(public auth: AuthService) { }
+  constructor(public auth: AuthService,
+    private authService: AuthService) {
+    this.authService.isAuthenticated$.subscribe(auth => { this.isAuthenticated = auth });
+  }
 
   ngOnInit() {
     this.routes.push({ route: '', title: 'Payments', icon: faMoneyBillWave });

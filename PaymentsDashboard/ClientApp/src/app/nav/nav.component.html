@@ -12,7 +12,7 @@
   <div class="container">
     <ul class="navbar-nav mr-auto">
       <li *ngFor="let route of routes" class="nav-item px-2">
-        <a class="nav-link font-weight-bold" [routerLink]="[route.route]"><fa-icon [icon]="route.icon"></fa-icon> {{route.title}}</a>
+        <a class="nav-link font-weight-bold" *ngIf="isAuthenticated" [routerLink]="[route.route]"><fa-icon [icon]="route.icon"></fa-icon> {{route.title}}</a>
       </li>
       <li class="nav-item px-2 float-right">
         <a class="nav-link font-weight-bold" [routerLink]="" (click)="auth.loginWithRedirect()" *ngIf="!(auth.isAuthenticated$ | async)"><fa-icon [icon]="faSignIn"></fa-icon> Log In</a>
