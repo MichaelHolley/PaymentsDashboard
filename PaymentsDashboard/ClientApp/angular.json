@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "progress": false,
             "extractCss": true,
             "outputPath": "dist",
@@ -37,6 +38,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -58,7 +65,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "PaymentsDashboard:build"
+            "browserTarget": "PaymentsDashboard:build",
+            "disableHostCheck": true
           },
           "configurations": {
             "production": {
@@ -152,5 +160,8 @@
       }
     }
   },
-  "defaultProject": "PaymentsDashboard"
+  "defaultProject": "PaymentsDashboard",
+  "cli": {
+    "analytics": false
+  }
 }

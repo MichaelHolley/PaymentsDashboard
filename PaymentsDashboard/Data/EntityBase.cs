@@ -6,5 +6,6 @@ namespace PaymentsDashboard.Data
 	{
 		public DateTime Created { get; set; }
 		public DateTime? Modified { get; set; }
+		public string Owner { get; set; }
 	}
 }

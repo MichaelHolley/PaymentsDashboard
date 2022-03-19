@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data.Modells;
+using PaymentsDashboard.Helpers;
 using System;
 using System.Linq;
 
@@ -7,14 +9,19 @@ namespace PaymentsDashboard.Data
 {
 	public class DataContext : DbContext
 	{
-		public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+		private readonly IHttpContextAccessor httpContextAccessor;
+
+		public DataContext(DbContextOptions<DataContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
+		{
+			this.httpContextAccessor = httpContextAccessor;
+		}
 		public DbSet<Tag> Tags { get; set; }
 		public DbSet<Payment> Payments { get; set; }
 		public DbSet<ReoccuringPayment> ReoccuringPayments { get; set; }
 
 		public override int SaveChanges()
 		{
-			var entries = ChangeTracker.Entries().Where(e => 
+			var entries = ChangeTracker.Entries().Where(e =>
 				e.Entity is EntityBase && (
 				e.State == EntityState.Added
 				|| e.State == EntityState.Modified));
@@ -26,6 +33,8 @@ namespace PaymentsDashboard.Data
 				if (entityEntry.State == EntityState.Added)
 				{
 					((EntityBase)entityEntry.Entity).Created = DateTime.Now;
+
+					((EntityBase)entityEntry.Entity).Owner = httpContextAccessor.HttpContext.GetUserId();
 				}
 			}
 

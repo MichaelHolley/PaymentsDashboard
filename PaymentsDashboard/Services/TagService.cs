@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
+using PaymentsDashboard.Helpers;
 using System;
 using System.Linq;
 
@@ -9,9 +11,11 @@ namespace PaymentsDashboard.Services
 	public class TagService : ITagService
 	{
 		private readonly DataContext _context;
-		public TagService(DataContext context)
+		private readonly IHttpContextAccessor httpContextAccessor;
+		public TagService(DataContext context, IHttpContextAccessor httpContextAccessor)
 		{
 			_context = context;
+			this.httpContextAccessor = httpContextAccessor;
 		}
 
 		public Tag CreateTag(Tag tag)
@@ -41,22 +45,28 @@ namespace PaymentsDashboard.Services
 
 		public IQueryable<Tag> GetAllTags()
 		{
-			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments);
+			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments)
+				.Where(t => t.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 		}
 
 		public IQueryable<Tag> GetPrimaryTags()
 		{
-			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments).Where(r => r.Type.Equals(TagType.Primary));
+			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments)
+				.Where(r => r.Type.Equals(TagType.Primary))
+				.Where(t => t.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 		}
 
 		public IQueryable<Tag> GetSecondaryTags()
 		{
-			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments).Where(r => r.Type.Equals(TagType.Secondary));
+			return _context.Tags.Include(r => r.Payments).Include(r => r.ReoccuringPayments)
+				.Where(r => r.Type.Equals(TagType.Secondary))
+				.Where(t => t.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 		}
 
 		public Tag GetTagById(Guid Id, bool tracked = false)
 		{
-			var tag = _context.Tags.Include(t => t.Payments).Include(r => r.ReoccuringPayments).Where(t => t.TagId.Equals(Id));
+			var tag = _context.Tags.Include(t => t.Payments).Include(r => r.ReoccuringPayments).Where(t => t.TagId.Equals(Id))
+				.Where(t => t.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 
 			if (!tracked)
 			{

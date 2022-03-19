@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Security.Claims;
 
 namespace PaymentsDashboard.UnitTest.Services
 {
@@ -14,6 +16,8 @@ namespace PaymentsDashboard.UnitTest.Services
 	public class ReoccuringPaymentServiceTest
 	{
 		private DataContext context;
+		private Mock<IHttpContextAccessor> contextAccessorMock;
+		private readonly static string ownerId = "User12345";
 
 		private ReoccuringPayment reoccuringPayment1 = new ReoccuringPayment()
 		{
@@ -28,10 +32,10 @@ namespace PaymentsDashboard.UnitTest.Services
 					TagId = Guid.NewGuid(),
 					Type = TagType.Primary,
 					HexColorCode = "#aaaaaa",
-					ReoccuringPayments = new List<ReoccuringPayment>()
+					ReoccuringPayments = new List<ReoccuringPayment>(),
 				}
 			},
-			Title = "ReoccuringPayment A"
+			Title = "ReoccuringPayment A",
 		};
 
 		private ReoccuringPayment reoccuringPayment2 = new ReoccuringPayment()
@@ -47,22 +51,30 @@ namespace PaymentsDashboard.UnitTest.Services
 					TagId = Guid.NewGuid(),
 					Type = TagType.Primary,
 					HexColorCode = "#111222",
-					ReoccuringPayments = new List<ReoccuringPayment>()
+					ReoccuringPayments = new List<ReoccuringPayment>(),
 				},
 				new Tag()
 				{
 					TagId = Guid.NewGuid(),
 					Type = TagType.Secondary,
 					HexColorCode = "#abcabc",
-					ReoccuringPayments = new List<ReoccuringPayment>()
+					ReoccuringPayments = new List<ReoccuringPayment>(),
 				}
 			},
-			Title = "ReoccuringPayment B"
+			Title = "ReoccuringPayment B",
 		};
 
 		[TestInitialize]
 		public void Init()
 		{
+			var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+				{
+					new Claim(ClaimTypes.NameIdentifier, ownerId),
+				}, "mock"));
+
+			contextAccessorMock = new Mock<IHttpContextAccessor>();
+			contextAccessorMock.Setup(x => x.HttpContext).Returns(new DefaultHttpContext() { User = user });
+
 			foreach (var tag in reoccuringPayment1.Tags)
 			{
 				tag.ReoccuringPayments.Add(reoccuringPayment1);
@@ -76,7 +88,7 @@ namespace PaymentsDashboard.UnitTest.Services
 
 			var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: "ReoccuringPaymentsDataBase").Options;
 
-			context = new DataContext(options);
+			context = new DataContext(options, contextAccessorMock.Object);
 			context.ReoccuringPayments.RemoveRange(context.ReoccuringPayments);
 			context.Tags.RemoveRange(context.Tags);
 
@@ -90,7 +102,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetAllReoccuringPayments_ReturnAllReoccuringPayments()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetAllReoccuringPayments().ToList();
 
@@ -102,7 +114,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetReoccuringPaymentById_ValidId_ReturnsReoccuringPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetReoccuringPaymentById(reoccuringPayment1.Id);
 
@@ -113,7 +125,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetReoccuringPaymentById_NotExistingId_ReturnsNull()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetReoccuringPaymentById(Guid.NewGuid());
 
@@ -123,7 +135,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void GetReoccuringPaymentById_NotTracked_ReturnsReoccuringPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.GetReoccuringPaymentById(reoccuringPayment2.Id, false);
 
@@ -134,7 +146,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void DeleteReoccuringPaymentById_ValidId_DeletesReoccuringPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.DeleteReoccuringPaymentById(reoccuringPayment1.Id);
 
@@ -145,7 +157,7 @@ namespace PaymentsDashboard.UnitTest.Services
 		[TestMethod]
 		public void DeleteReoccuringPaymentById_InvalidId_DeletesReoccuringPayment()
 		{
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.DeleteReoccuringPaymentById(Guid.NewGuid());
 
@@ -173,7 +185,7 @@ namespace PaymentsDashboard.UnitTest.Services
 				tag.ReoccuringPayments.Add(newReoccuringPayment);
 			}
 
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.CreateReoccuringPayment(newReoccuringPayment);
 			var ReoccuringPayments = service.GetAllReoccuringPayments().ToList();
@@ -188,7 +200,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			decimal newValue = new decimal(111.11);
 			reoccuringPayment1.Amount = newValue;
 
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.UpdateReoccuringPayment(reoccuringPayment1);
 			var ReoccuringPayments = service.GetAllReoccuringPayments().ToList();
@@ -205,7 +217,7 @@ namespace PaymentsDashboard.UnitTest.Services
 			reoccuringPayment1.Amount = newValue;
 			reoccuringPayment1.Id = Guid.NewGuid();
 
-			var service = new PaymentService(context);
+			var service = new PaymentService(context, contextAccessorMock.Object);
 
 			var result = service.UpdateReoccuringPayment(reoccuringPayment1);
 			Assert.IsNull(result);

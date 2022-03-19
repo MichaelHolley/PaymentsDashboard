@@ -1,6 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Services;
-using System;
 
 namespace PaymentsDashboard
 {
@@ -24,7 +23,25 @@ namespace PaymentsDashboard
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+			{
+				options.Authority = $"https://{Configuration["Auth0:Domain"]}/";
+				options.Audience = Configuration["Auth0:Audience"];
+			});
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy("ReadTags", policy => policy.RequireClaim("permissions", "read:tags"));
+				options.AddPolicy("ModifyTags", policy => policy.RequireClaim("permissions", "modify:tags"));
+
+				options.AddPolicy("ReadPayments", policy => policy.RequireClaim("permissions", "read:payments"));
+				options.AddPolicy("ModifyPayments", policy => policy.RequireClaim("permissions", "modify:payments"));
+
+				options.AddPolicy("AccessCharts", policy => policy.RequireClaim("permissions", "access:charts"));
+			});
+
 			services.AddControllersWithViews();
+
 			// In production, the Angular files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
 			{
@@ -37,6 +54,7 @@ namespace PaymentsDashboard
 
 			services.AddTransient<IPaymentService, PaymentService>();
 			services.AddTransient<ITagService, TagService>();
+			services.AddHttpContextAccessor();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +79,9 @@ namespace PaymentsDashboard
 			}
 
 			app.UseRouting();
+
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

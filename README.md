@@ -29,3 +29,8 @@ Tags are split into Primary and Secondary. Primary Tags specify the overall caus
 # Statistics
 <img src="https://i.imgur.com/zFD8XRa.png" alt="Tags-View"/>
 <img src="https://i.imgur.com/4vmmhg6.png" alt="Tags-View"/>
+
+# Auth0-Setup
+1. Create a SPA Angular Application and set the expected (empty) values within app.module.ts
+2. Create a API and add scopes. You may vary these in their usage - for simplicity you can check out the policies, I set within Startup.cs
+3. Update appsettings.*.json

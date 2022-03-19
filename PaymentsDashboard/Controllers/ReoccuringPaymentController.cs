@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Services;
@@ -19,6 +20,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Policy = "ReadPayments")]
 		public ActionResult<IEnumerable<ReoccuringPayment>> GetReoccuringPayments()
 		{
 			var payments = paymentService.GetAllReoccuringPayments();
@@ -27,6 +29,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Policy = "ModifyPayments")]
 		public ActionResult<ReoccuringPayment> CreateOrUpdateReoccuringPayment(ReoccuringPayment payment)
 		{
 			if (payment.Id.Equals(Guid.Empty))
@@ -45,6 +48,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "ModifyPayments")]
 		public ActionResult<ReoccuringPayment> DeleteReoccuringPayment(Guid id)
 		{
 			var result = paymentService.DeleteReoccuringPaymentById(id);

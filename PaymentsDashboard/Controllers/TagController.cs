@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Services;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace PaymentsDashboard.Controllers
 {
@@ -19,24 +21,28 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Policy = "ReadTags")]
 		public ActionResult<IEnumerable<Tag>> GetTags()
 		{
 			return Ok(tagService.GetAllTags().RemoveCycle());
 		}
 
 		[HttpGet("[action]")]
+		[Authorize(Policy = "ReadTags")]
 		public ActionResult<IEnumerable<Tag>> GetPrimaryTags()
 		{
 			return Ok(tagService.GetPrimaryTags().RemoveCycle());
 		}
 
 		[HttpGet("[action]")]
+		[Authorize(Policy = "ReadTags")]
 		public ActionResult<IEnumerable<Tag>> GetSecondaryTags()
 		{
 			return Ok(tagService.GetSecondaryTags().RemoveCycle());
 		}
 
 		[HttpGet("{id}")]
+		[Authorize(Policy = "ReadTags")]
 		public ActionResult<Tag> GetTag(Guid id)
 		{
 			Tag tag = tagService.GetTagById(id);
@@ -49,6 +55,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Policy = "ModifyTags")]
 		public ActionResult<Tag> CreateOrUpdateTag(Tag tag)
 		{
 			if (tag.TagId.Equals(Guid.Empty))
@@ -67,6 +74,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "ModifyTags")]
 		public ActionResult<Tag> DeleteTag(Guid id)
 		{
 			var result = tagService.DeleteTagById(id);

@@ -1,27 +1,27 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgApexchartsModule } from 'ng-apexcharts';
-
-import { PaymentService } from './shared/services/payment.service';
-import { TagService } from './shared/services/tag.service';
-
-import { AppComponent } from './app.component';
-import { PaymentsComponent } from './payments/payments.component';
-import { TagsComponent } from './tags/tags.component';
-import { NavComponent } from './nav/nav.component';
-import { ChartsComponent } from './charts/charts.component';
-import { ChartsService } from './shared/services/charts.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { env } from 'process';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { ChartsComponent } from './charts/charts.component';
+import { NavComponent } from './nav/nav.component';
+import { PaymentsComponent } from './payments/payments.component';
+import { ReoccuringPaymentsComponent } from './reoccuring-payments/reoccuring-payments.component';
 import { ConfirmDialogComponent } from './shared/dialogs/confirm-dialog.component';
 import { InputValidationComponent } from './shared/inputcomponents/input-validation.component';
-import { ReoccuringPaymentsComponent } from './reoccuring-payments/reoccuring-payments.component';
-import { ReoccuringPaymentService } from './shared/services/reoccuringpayment.service';
+import { ChartsService } from './shared/services/charts.service';
 import { DateTimeHelperService } from './shared/services/datetimehelper.service';
+import { PaymentService } from './shared/services/payment.service';
+import { ReoccuringPaymentService } from './shared/services/reoccuringpayment.service';
+import { TagService } from './shared/services/tag.service';
+import { TagsComponent } from './tags/tags.component';
+
 
 @NgModule({
   declarations: [
@@ -37,6 +37,17 @@ import { DateTimeHelperService } from './shared/services/datetimehelper.service'
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    AuthModule.forRoot({
+      // The domain and clientId were configured in the previous chapter
+      domain: '',
+      clientId: '',
+      audience: 'https://localhost:44347/api',           
+      httpInterceptor: {
+        allowedList: [
+          "*"
+        ]
+      }
+    }),
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
@@ -52,7 +63,12 @@ import { DateTimeHelperService } from './shared/services/datetimehelper.service'
     TagService,
     ChartsService,
     ReoccuringPaymentService,
-    DateTimeHelperService
+    DateTimeHelperService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHttpInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Data.Modells.Charts;
@@ -11,6 +12,7 @@ namespace PaymentsDashboard.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Policy = "AccessCharts")]
 	public class ChartsController : ControllerBase
 	{
 		private readonly IPaymentService paymentService;
@@ -28,6 +30,11 @@ namespace PaymentsDashboard.Controllers
 			var payments = paymentService.GetAllPayments().ToList();
 			var tags = tagService.GetPrimaryTags().RemoveCycle();
 			var values = new List<StackedBarChartMonthlyModell>();
+
+			if (payments.Count == 0)
+			{
+				return Ok(values);
+			}
 
 			var startDate = new DateTime(DateTime.Parse(payments.First().Date).Year, DateTime.Parse(payments.First().Date).Month, 1);
 			var finalDate = new DateTime(DateTime.Parse(payments.Last().Date).Year, DateTime.Parse(payments.Last().Date).Month + 1, 1);
@@ -63,6 +70,11 @@ namespace PaymentsDashboard.Controllers
 			var tags = tagService.GetPrimaryTags().RemoveCycle();
 			var values = new List<TagSum>();
 
+			if (payments.Count == 0)
+			{
+				return Ok(values);
+			}
+
 			var startDate = new DateTime(DateTime.Parse(payments.First().Date).Year, DateTime.Parse(payments.First().Date).Month, 1);
 			var finalDate = new DateTime(DateTime.Parse(payments.Last().Date).Year, DateTime.Parse(payments.Last().Date).Month + 1, 1);
 
@@ -75,14 +87,15 @@ namespace PaymentsDashboard.Controllers
 			foreach (var p in payments)
 			{
 				var monthOfPayment = new DateTime(DateTime.Parse(p.Date).Year, DateTime.Parse(p.Date).Month, 1);
-				if (!visitedMonths.Any(vm => vm.Equals(monthOfPayment))) {
+				if (!visitedMonths.Any(vm => vm.Equals(monthOfPayment)))
+				{
 					visitedMonths.Add(monthOfPayment);
 				}
 
 				values.Single(v => v.Tag.TagId.Equals(p.Tags.Single(pT => pT.Type.Equals(TagType.Primary)).TagId)).Sum += p.Amount;
 			}
 
-			foreach(var val in values)
+			foreach (var val in values)
 			{
 				val.Sum /= visitedMonths.Count;
 			}
