@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
+using PaymentsDashboard.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +12,17 @@ namespace PaymentsDashboard.Services
 	public class PaymentService : IPaymentService
 	{
 		private readonly DataContext _context;
-		public PaymentService(DataContext context)
+		private readonly IHttpContextAccessor httpContextAccessor;
+		public PaymentService(DataContext context, IHttpContextAccessor httpContextAccessor)
 		{
 			_context = context;
+			this.httpContextAccessor = httpContextAccessor;
 		}
 
 		public Payment GetPaymentById(Guid Id, bool tracked = false)
 		{
-			var payment = _context.Payments.Include(p => p.Tags).Where(p => p.PaymentId.Equals(Id));
+			var payment = _context.Payments.Include(p => p.Tags).Where(p => p.PaymentId.Equals(Id))
+				.Where(p => p.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 
 			if (!tracked)
 			{
@@ -29,7 +34,8 @@ namespace PaymentsDashboard.Services
 
 		public IQueryable<Payment> GetAllPayments()
 		{
-			return _context.Payments.Include(r => r.Tags).OrderBy(p => p.Date);
+			return _context.Payments.Include(r => r.Tags).OrderBy(p => p.Date)
+				.Where(p => p.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 		}
 
 
@@ -37,7 +43,8 @@ namespace PaymentsDashboard.Services
 		{
 			DateTime date = DateTime.UtcNow.AddMonths(numberOfMonths * -1);
 
-			return GetAllPayments().Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
+			return GetAllPayments()
+				.Where(r => r.Date.StartsWith(date.Year.ToString()) && r.Date.Contains("-" + date.ToString("MM") + "-"));
 		}
 
 		public Payment DeletePaymentById(Guid id)
@@ -69,7 +76,7 @@ namespace PaymentsDashboard.Services
 		{
 			Payment paymentById = GetPaymentById(payment.PaymentId, true);
 
-			if(paymentById == null)
+			if (paymentById == null)
 			{
 				return null;
 			}
@@ -89,7 +96,8 @@ namespace PaymentsDashboard.Services
 			List<Tag> trackedTags = new List<Tag>();
 			foreach (var tag in tags)
 			{
-				trackedTags.Add(_context.Tags.First(t => t.TagId.Equals(tag.TagId)));
+				trackedTags.Add(_context.Tags.Where(t => t.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()))
+					.First(t => t.TagId.Equals(tag.TagId)));
 			}
 
 			return trackedTags;
@@ -97,12 +105,15 @@ namespace PaymentsDashboard.Services
 
 		public IQueryable<ReoccuringPayment> GetAllReoccuringPayments()
 		{
-			return _context.ReoccuringPayments.Include(r => r.Tags).OrderBy(p => p.Created);
+			return _context.ReoccuringPayments.Include(r => r.Tags).OrderBy(p => p.Created)
+				.Where(p => p.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 		}
 
 		public ReoccuringPayment GetReoccuringPaymentById(Guid Id, bool tracked = false)
 		{
-			var payment = _context.ReoccuringPayments.Include(p => p.Tags).Where(p => p.Id.Equals(Id));
+			var payment = _context.ReoccuringPayments.Include(p => p.Tags)
+				.Where(p => p.Id.Equals(Id))
+				.Where(p => p.Owner.Equals(httpContextAccessor.HttpContext.GetUserId()));
 
 			if (!tracked)
 			{
@@ -141,7 +152,7 @@ namespace PaymentsDashboard.Services
 		{
 			ReoccuringPayment paymentById = GetReoccuringPaymentById(payment.Id, true);
 
-			if(paymentById == null)
+			if (paymentById == null)
 			{
 				return null;
 			}

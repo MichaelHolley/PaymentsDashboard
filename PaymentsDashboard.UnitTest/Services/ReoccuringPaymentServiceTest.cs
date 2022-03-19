@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Services;
@@ -76,7 +78,7 @@ namespace PaymentsDashboard.UnitTest.Services
 
 			var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: "ReoccuringPaymentsDataBase").Options;
 
-			context = new DataContext(options);
+			context = new DataContext(options, It.IsAny<IHttpContextAccessor>());
 			context.ReoccuringPayments.RemoveRange(context.ReoccuringPayments);
 			context.Tags.RemoveRange(context.Tags);
 

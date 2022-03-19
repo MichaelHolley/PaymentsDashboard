@@ -18,12 +18,7 @@ export class NavComponent implements OnInit {
 
   routes: { route: string, title: string, icon: any }[] = [];
 
-  constructor(public auth: AuthService) {
-    auth.user$.subscribe(p => console.log(p));
-    auth.idTokenClaims$.subscribe(p => console.log(p));
-    auth.appState$.subscribe(p => console.log(p));
-    auth.getAccessTokenSilently().subscribe(p => console.log(p));
-  }
+  constructor(public auth: AuthService) { }
 
   ngOnInit() {
     this.routes.push({ route: '', title: 'Payments', icon: faMoneyBillWave });

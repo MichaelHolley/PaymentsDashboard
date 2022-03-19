@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Data.Modells.Charts;
@@ -11,6 +12,7 @@ namespace PaymentsDashboard.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Policy = "AccessCharts")]
 	public class ChartsController : ControllerBase
 	{
 		private readonly IPaymentService paymentService;

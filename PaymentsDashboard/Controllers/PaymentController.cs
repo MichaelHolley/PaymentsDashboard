@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentsDashboard.Data;
 using PaymentsDashboard.Data.Modells;
 using PaymentsDashboard.Services;
@@ -19,6 +20,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Policy = "ReadPayments")]
 		public ActionResult<IEnumerable<Payment>> GetPayments()
 		{
 			var payments = paymentService.GetAllPayments();
@@ -27,6 +29,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpGet("{numberOfMonths}")]
+		[Authorize(Policy = "ReadPayments")]
 		public ActionResult<IEnumerable<Payment>> GetPaymentsByMonths(int numberOfMonths)
 		{
 			var payments = paymentService.GetPaymentsByMonths(numberOfMonths);
@@ -34,6 +37,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Policy = "ModifyPayments")]
 		public ActionResult<Payment> CreateOrUpdatePayment(Payment payment)
 		{
 			if (payment.PaymentId.Equals(Guid.Empty))
@@ -52,6 +56,7 @@ namespace PaymentsDashboard.Controllers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "ModifyPayments")]
 		public ActionResult<Payment> DeletePayment(Guid id)
 		{
 			var result = paymentService.DeletePaymentById(id);
