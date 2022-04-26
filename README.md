@@ -15,6 +15,8 @@
 # PaymentsDashboard [![.NET](https://github.com/MichaelHolley/PaymentsDashboard/actions/workflows/CI.yml/badge.svg?branch=master)]
 A Dashboard for managing outgoing payments/expenses with tags and more features to come.
 
+**Disclaimer**: This repo is stale atm.
+
 # Payments
 Payments have a title, an amount and a date which define its most important characteristics. Furthermore a Primary-Tag which is comparable to a category. This simplifies sorting and filtering.
 Secondary-Tags are a way to specify the Primary-Tag and give more detail about the payment.
